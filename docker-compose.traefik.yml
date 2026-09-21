@@ -1,0 +1,86 @@
+# Production compose for hosts that ALREADY run Traefik as the global reverse proxy.
+# Requirements (check on the VPS with `docker network ls` and `docker inspect <a running container>`):
+#   - external network name (default assumed: "traefik")
+#   - cert resolver name used by existing routers (default assumed: "letsencrypt")
+# Adjust NETWORK_NAME / CERTRESOLVER below if different.
+
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.0
+    command: ["start", "--import-realm", "--hostname=https://auth.ariefspace.xyz", "--http-enabled=true"]
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${KC_ADMIN:-admin}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KC_ADMIN_PASSWORD:?set in .env}
+      KC_HEALTH_ENABLED: "true"
+    volumes:
+      - ./keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json:ro
+    expose:
+      - "8080"
+    networks: [traefik, internal]
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.learnloop-auth.rule=Host(`auth.ariefspace.xyz`)
+      - traefik.http.routers.learnloop-auth.entrypoints=websecure
+      - traefik.http.routers.learnloop-auth.tls.certresolver=letsencrypt
+      - traefik.http.services.learnloop-auth.loadbalancer.server.port=8080
+    healthcheck:
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/9000 && echo -e 'GET /health/ready HTTP/1.1\\nHost: localhost\\nConnection: close\\n\\n' >&3 && cat <&3 | grep -q 'UP'"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 60s
+    restart: unless-stopped
+
+  backend:
+    build: ./backend
+    environment:
+      DATABASE_URL: sqlite:////data/learnloop.db
+      KEYCLOAK_ISSUER: https://auth.ariefspace.xyz/realms/learnloop
+      KEYCLOAK_AUDIENCE: learnloop-api
+      CORS_ORIGINS: '["https://learnloop.ariefspace.xyz"]'
+    volumes:
+      - backend-data:/data
+    expose:
+      - "8000"
+    networks: [traefik, internal]
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.learnloop-api.rule=Host(`learnloop.ariefspace.xyz`) && (PathPrefix(`/api`) || Path(`/health`))
+      - traefik.http.routers.learnloop-api.entrypoints=websecure
+      - traefik.http.routers.learnloop-api.tls.certresolver=letsencrypt
+      - traefik.http.services.learnloop-api.loadbalancer.server.port=8000
+    depends_on:
+      keycloak:
+        condition: service_healthy
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_KEYCLOAK_ISSUER: https://auth.ariefspace.xyz/realms/learnloop
+        VITE_API_URL: https://learnloop.ariefspace.xyz/api/v1
+    expose:
+      - "80"
+    networks: [traefik, internal]
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.learnloop-web.rule=Host(`learnloop.ariefspace.xyz`)
+      - traefik.http.routers.learnloop-web.entrypoints=websecure
+      - traefik.http.routers.learnloop-web.tls.certresolver=letsencrypt
+      - traefik.http.services.learnloop-web.loadbalancer.server.port=80
+      # lower priority than the /api router ( routers are sorted by rule length anyway )
+      - traefik.http.routers.learnloop-web.priority=1
+      - traefik.http.routers.learnloop-api.priority=100
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+networks:
+  traefik:
+    external: true
+    name: traefik
+  internal:
+
+volumes:
+  backend-data:
