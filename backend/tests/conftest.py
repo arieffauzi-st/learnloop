@@ -1,8 +1,8 @@
 import pytest
 from fastapi.testclient import TestClient
 
+import app.models  # registers all mappers on Base.metadata
 from app.db import Base, get_engine
-import app.models  # noqa: F401  (registers all mappers on Base.metadata)
 from app.main import app
 
 
