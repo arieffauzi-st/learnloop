@@ -54,6 +54,13 @@ mkdir -p "$DEPLOY_DIR"
 rm -rf "$DEPLOY_DIR"/*
 tar -C . --exclude .git -cf - . | tar -C "$DEPLOY_DIR" -xf -
 cd "$DEPLOY_DIR"
+# Seed the Keycloak import realm via a NAMED VOLUME. Bind mounts do NOT work
+# here: compose runs inside the Jenkins container, so relative paths resolve
+# against the container filesystem while the Docker daemon resolves them on
+# the host - it silently creates an empty dir and the realm never imports.
+docker volume create learnloop-kc-import >/dev/null
+tar -C keycloak -cf - . | docker run --rm -i -v learnloop-kc-import:/tgt alpine sh -c 'rm -rf /tgt/* && tar -C /tgt -xf -'
+
 printf 'KC_ADMIN_PASSWORD=%s\\n' "$KC_PW" > .env
 trap 'rm -f .env' EXIT
 docker compose -p learnloop -f docker-compose.arief.yml up -d --build --force-recreate
