@@ -50,7 +50,9 @@ set -euo pipefail
 # build, and bind mounts (keycloak realm) would then point at a deleted dir.
 DEPLOY_DIR=/var/jenkins_home/deploy/learnloop
 mkdir -p "$DEPLOY_DIR"
-rsync -a --delete --exclude .git ./ "$DEPLOY_DIR/"
+# rsync is not installed in the Jenkins image; rm+tar copy is equivalent to rsync -a --delete
+rm -rf "$DEPLOY_DIR"/*
+tar -C . --exclude .git -cf - . | tar -C "$DEPLOY_DIR" -xf -
 cd "$DEPLOY_DIR"
 printf 'KC_ADMIN_PASSWORD=%s\\n' "$KC_PW" > .env
 trap 'rm -f .env' EXIT
