@@ -6,8 +6,9 @@ import App from './App.tsx'
 import { AuthProviderWrapper, RequireRole } from './auth/AuthProvider'
 import LoginPage from './pages/LoginPage'
 import Dashboard from './pages/Dashboard'
-import TeacherDashboard from './pages/TeacherDashboard'
+import ParentDashboard from './pages/ParentDashboard'
 import StudentDashboard from './pages/StudentDashboard'
+import TeacherDashboard from './pages/TeacherDashboard'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -19,6 +20,7 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/teacher" element={<RequireRole role="teacher"><TeacherDashboard /></RequireRole>} />
           <Route path="/student" element={<RequireRole role="student"><StudentDashboard /></RequireRole>} />
+          <Route path="/parent" element={<RequireRole role="parent"><ParentDashboard /></RequireRole>} />
         </Routes>
       </AuthProviderWrapper>
     </BrowserRouter>
