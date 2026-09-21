@@ -7,6 +7,7 @@ import { AuthProviderWrapper, RequireRole } from './auth/AuthProvider'
 import LoginPage from './pages/LoginPage'
 import Dashboard from './pages/Dashboard'
 import TeacherDashboard from './pages/TeacherDashboard'
+import StudentDashboard from './pages/StudentDashboard'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -17,6 +18,7 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/login" element={<LoginPage />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/teacher" element={<RequireRole role="teacher"><TeacherDashboard /></RequireRole>} />
+          <Route path="/student" element={<RequireRole role="student"><StudentDashboard /></RequireRole>} />
         </Routes>
       </AuthProviderWrapper>
     </BrowserRouter>
