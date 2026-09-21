@@ -42,7 +42,6 @@ pipeline {
       }
     }
     stage('Deploy — prod') {
-      when { branch 'main' }
       steps {
         withCredentials([string(credentialsId: 'learnloop-kc-admin-password', variable: 'KC_PW')]) {
           sh '''#!/bin/bash
@@ -62,7 +61,6 @@ docker image prune -f
       }
     }
     stage('Smoke test') {
-      when { branch 'main' }
       steps {
         sh '''#!/bin/bash
 for i in $(seq 1 30); do
