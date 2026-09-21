@@ -1,0 +1,25 @@
+{
+  "realm": "learnloop",
+  "enabled": true,
+  "displayName": "LearnLoop",
+  "registrationAllowed": true,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": false,
+  "rememberMe": true,
+  "accessTokenLifespan": 900,
+  "sslRequired": "external",
+  "users": [
+    {
+      "username": "teacher-demo",
+      "enabled": true,
+      "email": "teacher@learnloop.local",
+      "firstName": "Demo",
+      "lastName": "Teacher",
+      "attributes": { "role": ["teacher"] },
+      "credentials": [
+        { "type": "password", "value": "demo-password", "temporary": false }
+      ]
+    }
+  ]
+}
