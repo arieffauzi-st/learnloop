@@ -9,6 +9,43 @@
   "rememberMe": true,
   "accessTokenLifespan": 900,
   "sslRequired": "external",
+  "clients": [
+    {
+      "clientId": "learnloop-web",
+      "enabled": true,
+      "publicClient": true,
+      "protocol": "openid-connect",
+      "rootUrl": "http://localhost:5173",
+      "redirectUris": ["http://localhost:5173/*", "http://localhost:4173/*"],
+      "webOrigins": ["http://localhost:5173", "http://localhost:4173"],
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "attributes": { "pkce.code.challenge.method": "S256" },
+      "protocolMappers": [
+        {
+          "name": "role-attribute-mapper",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.attribute": "role",
+            "claim.name": "role",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        }
+      ]
+    }
+  ],
+  "roles": {
+    "realm": [
+      { "name": "student" },
+      { "name": "teacher" },
+      { "name": "parent" }
+    ]
+  },
   "users": [
     {
       "username": "teacher-demo",
@@ -17,6 +54,31 @@
       "firstName": "Demo",
       "lastName": "Teacher",
       "attributes": { "role": ["teacher"] },
+      "realmRoles": ["teacher"],
+      "credentials": [
+        { "type": "password", "value": "demo-password", "temporary": false }
+      ]
+    },
+    {
+      "username": "student-demo",
+      "enabled": true,
+      "email": "student@learnloop.local",
+      "firstName": "Demo",
+      "lastName": "Student",
+      "attributes": { "role": ["student"] },
+      "realmRoles": ["student"],
+      "credentials": [
+        { "type": "password", "value": "demo-password", "temporary": false }
+      ]
+    },
+    {
+      "username": "parent-demo",
+      "enabled": true,
+      "email": "parent@learnloop.local",
+      "firstName": "Demo",
+      "lastName": "Parent",
+      "attributes": { "role": ["parent"] },
+      "realmRoles": ["parent"],
       "credentials": [
         { "type": "password", "value": "demo-password", "temporary": false }
       ]
