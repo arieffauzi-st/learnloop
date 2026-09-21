@@ -1,4 +1,4 @@
-{$DOMAIN} {
+learnloop.ariefspace.xyz {
 	# Frontend SPA
 	handle {
 		reverse_proxy frontend:80
@@ -11,10 +11,8 @@
 	handle /health {
 		reverse_proxy backend:8000
 	}
+}
 
-	# Keycloak (hosted login)
-	handle /auth/* {
-		uri strip_prefix /auth
-		reverse_proxy keycloak:8080
-	}
+auth.ariefspace.xyz {
+	reverse_proxy keycloak:8080
 }
