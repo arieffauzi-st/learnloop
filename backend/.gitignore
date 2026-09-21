@@ -1,2 +1,4 @@
-learnloop.db
+.venv/
+__pycache__/
 *.egg-info/
+*.db
