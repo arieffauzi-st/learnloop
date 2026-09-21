@@ -15,12 +15,22 @@
       "enabled": true,
       "publicClient": true,
       "protocol": "openid-connect",
-      "rootUrl": "http://localhost:5173",
-      "redirectUris": ["http://localhost:5173/*", "http://localhost:4173/*"],
-      "webOrigins": ["http://localhost:5173", "http://localhost:4173"],
+      "rootUrl": "https://learnloop.ariefspace.xyz",
+      "redirectUris": [
+        "http://localhost:5173/*",
+        "http://localhost:4173/*",
+        "https://learnloop.ariefspace.xyz/*"
+      ],
+      "webOrigins": [
+        "http://localhost:5173",
+        "http://localhost:4173",
+        "https://learnloop.ariefspace.xyz"
+      ],
       "standardFlowEnabled": true,
       "directAccessGrantsEnabled": false,
-      "attributes": { "pkce.code.challenge.method": "S256" },
+      "attributes": {
+        "pkce.code.challenge.method": "S256"
+      },
       "protocolMappers": [
         {
           "name": "role-attribute-mapper",
@@ -41,9 +51,15 @@
   ],
   "roles": {
     "realm": [
-      { "name": "student" },
-      { "name": "teacher" },
-      { "name": "parent" }
+      {
+        "name": "student"
+      },
+      {
+        "name": "teacher"
+      },
+      {
+        "name": "parent"
+      }
     ]
   },
   "users": [
@@ -53,10 +69,20 @@
       "email": "teacher@learnloop.local",
       "firstName": "Demo",
       "lastName": "Teacher",
-      "attributes": { "role": ["teacher"] },
-      "realmRoles": ["teacher"],
+      "attributes": {
+        "role": [
+          "teacher"
+        ]
+      },
+      "realmRoles": [
+        "teacher"
+      ],
       "credentials": [
-        { "type": "password", "value": "demo-password", "temporary": false }
+        {
+          "type": "password",
+          "value": "demo-password",
+          "temporary": false
+        }
       ]
     },
     {
@@ -65,10 +91,20 @@
       "email": "student@learnloop.local",
       "firstName": "Demo",
       "lastName": "Student",
-      "attributes": { "role": ["student"] },
-      "realmRoles": ["student"],
+      "attributes": {
+        "role": [
+          "student"
+        ]
+      },
+      "realmRoles": [
+        "student"
+      ],
       "credentials": [
-        { "type": "password", "value": "demo-password", "temporary": false }
+        {
+          "type": "password",
+          "value": "demo-password",
+          "temporary": false
+        }
       ]
     },
     {
@@ -77,10 +113,20 @@
       "email": "parent@learnloop.local",
       "firstName": "Demo",
       "lastName": "Parent",
-      "attributes": { "role": ["parent"] },
-      "realmRoles": ["parent"],
+      "attributes": {
+        "role": [
+          "parent"
+        ]
+      },
+      "realmRoles": [
+        "parent"
+      ],
       "credentials": [
-        { "type": "password", "value": "demo-password", "temporary": false }
+        {
+          "type": "password",
+          "value": "demo-password",
+          "temporary": false
+        }
       ]
     }
   ]
