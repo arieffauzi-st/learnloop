@@ -42,11 +42,18 @@ pipeline {
       }
     }
     stage('Deploy — prod') {
+      when { branch 'main' }
       steps {
         withCredentials([string(credentialsId: 'learnloop-kc-admin-password', variable: 'KC_PW')]) {
           sh '''#!/bin/bash
 set -euo pipefail
-printf 'KC_ADMIN_PASSWORD=%s\n' "$KC_PW" > .env
+# Deploy from a PERSISTENT copy: cleanWs() deletes this workspace after the
+# build, and bind mounts (keycloak realm) would then point at a deleted dir.
+DEPLOY_DIR=/var/jenkins_home/deploy/learnloop
+mkdir -p "$DEPLOY_DIR"
+rsync -a --delete --exclude .git ./ "$DEPLOY_DIR/"
+cd "$DEPLOY_DIR"
+printf 'KC_ADMIN_PASSWORD=%s\\n' "$KC_PW" > .env
 trap 'rm -f .env' EXIT
 docker compose -p learnloop -f docker-compose.arief.yml up -d --build --force-recreate
 docker image prune -f
@@ -55,6 +62,7 @@ docker image prune -f
       }
     }
     stage('Smoke test') {
+      when { branch 'main' }
       steps {
         sh '''#!/bin/bash
 for i in $(seq 1 30); do
