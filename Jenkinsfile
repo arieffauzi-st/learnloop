@@ -14,15 +14,15 @@ pipeline {
     stage('Backend — lint') {
       steps {
         dir('backend') {
-          sh 'uv sync --frozen || uv sync'
-          sh 'uv run ruff check .'
+          sh 'export PATH="$HOME/.local/bin:$PATH"; command -v uv >/dev/null 2>&1 || curl -LsSf https://astral.sh/uv/install.sh | sh'
+          sh 'export PATH="$HOME/.local/bin:$PATH"; uv sync --frozen || uv sync; uv run ruff check .'
         }
       }
     }
     stage('Backend — test') {
       steps {
         dir('backend') {
-          sh 'uv run pytest -q'
+          sh 'export PATH="$HOME/.local/bin:$PATH"; uv run pytest -q'
         }
       }
     }
