@@ -48,7 +48,7 @@ pipeline {
 set -euo pipefail
 printf 'KC_ADMIN_PASSWORD=%s\n' "$KC_PW" > .env
 trap 'rm -f .env' EXIT
-docker compose -p learnloop -f docker-compose.traefik.yml up -d --build
+docker compose -p learnloop -f docker-compose.arief.yml up -d --build
 docker image prune -f
 '''
         }

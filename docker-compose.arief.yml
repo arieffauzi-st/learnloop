@@ -1,0 +1,64 @@
+# Production compose for the arief VPS host (Traefik file-provider, network "arief_proxy").
+# Routing is configured in /opt/stack/traefik/dynamic.yml on the host — NO traefik labels here.
+
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.0
+    container_name: learnloop-keycloak
+    command: ["start", "--import-realm", "--hostname=https://auth.ariefspace.xyz", "--http-enabled=true"]
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${KC_ADMIN:-admin}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KC_ADMIN_PASSWORD:?set in .env}
+      KC_HEALTH_ENABLED: "true"
+    volumes:
+      - ./keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json:ro
+    expose:
+      - "8080"
+    networks: [arief_proxy]
+    healthcheck:
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/9000 && echo -e 'GET /health/ready HTTP/1.1\\nHost: localhost\\nConnection: close\\n\\n' >&3 && cat <&3 | grep -q 'UP'"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 60s
+    restart: unless-stopped
+
+  backend:
+    build: ./backend
+    container_name: learnloop-backend
+    environment:
+      DATABASE_URL: sqlite:////data/learnloop.db
+      KEYCLOAK_ISSUER: https://auth.ariefspace.xyz/realms/learnloop
+      KEYCLOAK_AUDIENCE: learnloop-api
+      CORS_ORIGINS: '["https://learnloop.ariefspace.xyz"]'
+    volumes:
+      - backend-data:/data
+    expose:
+      - "8000"
+    networks: [arief_proxy]
+    depends_on:
+      keycloak:
+        condition: service_healthy
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_KEYCLOAK_ISSUER: https://auth.ariefspace.xyz/realms/learnloop
+        VITE_API_URL: https://learnloop.ariefspace.xyz/api/v1
+    container_name: learnloop-frontend
+    expose:
+      - "80"
+    networks: [arief_proxy]
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+networks:
+  arief_proxy:
+    external: true
+    name: arief_proxy
+
+volumes:
+  backend-data:
