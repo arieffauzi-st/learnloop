@@ -103,7 +103,9 @@ html, body { height: 100%; }
   box-shadow: 0 12px 32px rgba(58, 46, 57, 0.12);
   padding: 2rem;
   border: 1px solid rgba(224, 191, 189, 0.4);
-  margin: 0 !important;
+  width: 100%;
+  max-width: 30rem;
+  margin: 0 auto !important;
   text-align: left;
 }
 #kc-header { width: 100%; }
