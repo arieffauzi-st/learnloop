@@ -9,7 +9,7 @@ import random
 import string
 from datetime import UTC, datetime, timedelta
 
-from sqlalchemy import select, func
+from sqlalchemy import func, select
 
 from app.db import _SessionLocal
 from app.models import (
@@ -77,10 +77,10 @@ def seed_demo() -> dict:
                 db.add(a)
             return a
 
-        a1 = assignment(c1, "Fraction Pizza Party", "Draw a pizza with 8 slices; color 3/8 mushrooms and 4/8 cheese.", 1)
-        a2 = assignment(c1, "Decimal Maze Challenge", "Navigate the stepping stones from 0.1 to 1.0!", 3)
-        a3 = assignment(c2, "Rainforest Report", "One page about your favorite rainforest animal.", 7)
-        a4 = assignment(c1, "Shape Scavenger Hunt", "Find 5 right triangles around your home.", -3)
+        assignment(c1, "Fraction Pizza Party", "Draw a pizza with 8 slices; color 3/8 mushrooms and 4/8 cheese.", 1)
+        assignment(c1, "Decimal Maze Challenge", "Navigate the stepping stones from 0.1 to 1.0!", 3)
+        assignment(c2, "Rainforest Report", "One page about your favorite rainforest animal.", 7)
+        assignment(c1, "Shape Scavenger Hunt", "Find 5 right triangles around your home.", -3)
         db.flush()
 
         def submission(a, text, days_ago, late):
@@ -93,6 +93,7 @@ def seed_demo() -> dict:
                                is_late=late, version=1)
                 db.add(s)
 
+        a4 = db.query(Assignment).filter(Assignment.title == "Shape Scavenger Hunt").first()
         submission(a4, "Found triangles in the roof window, pizza slice, and 3 books!", 4, False)
 
         lc = db.query(LinkCode).filter(LinkCode.student_id == student.id).first()
