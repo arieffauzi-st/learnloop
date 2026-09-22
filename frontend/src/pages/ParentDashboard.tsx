@@ -38,6 +38,7 @@ export default function ParentDashboard() {
   const [summary, setSummary] = useState<Summary | null>(null)
   const [linkCode, setLinkCode] = useState('')
   const [msg, setMsg] = useState('')
+  const [msgIsError, setMsgIsError] = useState(false)
 
   useEffect(() => {
     apiFetch('/parent/children', token)
@@ -52,13 +53,18 @@ export default function ParentDashboard() {
 
   const link = async () => {
     try {
-      const r = await apiFetch('/parent/link', token, { method: 'POST', body: JSON.stringify({ link_code: linkCode }) })
+      const r = await apiFetch('/parent/link', token, { method: 'POST', body: JSON.stringify({ link_code: linkCode.trim() }) })
       setMsg(`Connected to ${r.child_name}! 🎉`)
+      setMsgIsError(false)
       setLinkCode('')
       apiFetch('/parent/children', token)
         .then((kids: Child[]) => { setChildren(kids); setSelected(kids[0] ?? null) })
         .catch(() => {})
-    } catch (e) { setMsg(String(e)) }
+    } catch {
+      // Friendly message instead of raw API error JSON (issue #52).
+      setMsg('Invalid code — ask your child for the current code')
+      setMsgIsError(true)
+    }
   }
 
   return (
@@ -99,7 +105,7 @@ export default function ParentDashboard() {
               Connect
             </button>
           </div>
-          {msg && <p className="text-sm text-muted mt-3">{msg}</p>}
+          {msg && <p className={`text-sm mt-3 ${msgIsError ? 'text-coral-deep font-semibold' : 'text-muted'}`}>{msg}</p>}
         </section>
 
         {children.length === 0 ? (

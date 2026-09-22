@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useAuth } from 'react-oidc-context'
 import { apiFetch } from './TeacherDashboard'
+import { parseUtcNaive, formatDueAt } from '../utils/datetime'
 
 interface Assignment {
   id: number
@@ -15,8 +16,9 @@ const level = (xp: number) => Math.floor(xp / XP_PER_LEVEL) + 1
 const levelProgress = (xp: number) => xp % XP_PER_LEVEL
 
 function dueLabel(due: string): { text: string; tone: 'teal' | 'amber' | 'red' } {
-  const diff = new Date(due).getTime() - Date.now()
-  const d = new Date(due).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })
+  // due_at arrives as a naive UTC datetime — anchor to UTC before formatting (issue #74).
+  const diff = parseUtcNaive(due).getTime() - Date.now()
+  const d = formatDueAt(due)
   if (diff < 0) return { text: `Was due ${d}`, tone: 'red' }
   if (diff < 24 * 3600e3) return { text: `Due ${d} (soon)`, tone: 'amber' }
   return { text: `Due ${d}`, tone: 'teal' }
@@ -40,6 +42,7 @@ export default function StudentDashboard() {
   const [joinCode, setJoinCode] = useState('')
   const [progress, setProgress] = useState<{ xp: number; streak: number } | null>(null)
   const [msg, setMsg] = useState('')
+  const [msgIsError, setMsgIsError] = useState(false)
   const [active, setActive] = useState<Assignment | null>(null)
   const [celebrate, setCelebrate] = useState<string | null>(null)
 
@@ -49,10 +52,15 @@ export default function StudentDashboard() {
 
   const join = async () => {
     try {
-      const r = await apiFetch('/classes/join', token, { method: 'POST', body: JSON.stringify({ join_code: joinCode }) })
+      const r = await apiFetch('/classes/join', token, { method: 'POST', body: JSON.stringify({ join_code: joinCode.trim() }) })
       setMsg(`Welcome to ${r.class_name}! 🎉`)
+      setMsgIsError(false)
       setJoinCode('')
-    } catch (e) { setMsg(String(e)) }
+    } catch {
+      // Friendly message instead of raw API error JSON (issue #52).
+      setMsg('Invalid code — check with your teacher')
+      setMsgIsError(true)
+    }
   }
 
   const xp = progress?.xp ?? 0
@@ -143,7 +151,7 @@ export default function StudentDashboard() {
               Join
             </button>
           </div>
-          {msg && <p className="text-sm text-muted mt-3">{msg}</p>}
+          {msg && <p className={`text-sm mt-3 ${msgIsError ? 'text-coral-deep font-semibold' : 'text-muted'}`}>{msg}</p>}
         </section>
 
         {/* Quests */}
@@ -297,8 +305,9 @@ function QuestModal({ assignment, token, onClose, onSubmitted }: {
         body: JSON.stringify({ text }),
       })
       onSubmitted(assignment.title)
-    } catch (ex) {
-      setErr(String(ex))
+    } catch {
+      // Friendly message instead of raw API error JSON (issue #52).
+      setErr('Something went wrong — please try again.')
     } finally {
       setBusy(false)
     }
@@ -319,7 +328,7 @@ function QuestModal({ assignment, token, onClose, onSubmitted }: {
           <div>
             <div className="flex items-center gap-2">
               <span className="text-xs font-display font-bold px-2.5 py-0.5 rounded-full bg-sunny/25 text-amber-warm">Mission</span>
-              <span className="text-xs text-muted">Due {new Date(assignment.due_at).toLocaleString('en-US', { month: 'short', day: 'numeric' })}</span>
+              <span className="text-xs text-muted">Due {formatDueAt(assignment.due_at)}</span>
             </div>
             <h3 className="font-display text-2xl font-bold">{assignment.title}</h3>
           </div>

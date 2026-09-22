@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useAuth } from 'react-oidc-context'
+import { formatDueAt, dueDayHint } from '../utils/datetime'
 
 const API = import.meta.env.VITE_API_URL ?? '/api/v1'
 
@@ -136,7 +137,9 @@ function ClassDetail({ cls, token }: { cls: ClassInfo; token: string }) {
   const [tab, setTab] = useState<'assignments' | 'students'>('assignments')
   const [assignments, setAssignments] = useState<Assignment[]>([])
   const [title, setTitle] = useState('')
+  const [instructions, setInstructions] = useState('')
   const [dueAt, setDueAt] = useState('')
+  const [formError, setFormError] = useState('')
   const [showModal, setShowModal] = useState(false)
 
   useEffect(() => {
@@ -144,16 +147,25 @@ function ClassDetail({ cls, token }: { cls: ClassInfo; token: string }) {
   }, [cls.id, token])
 
   const createAssignment = async () => {
+    // Inline validation instead of relying only on native `required` (issue #52).
+    if (!title.trim() || !dueAt || !instructions.trim()) {
+      setFormError('Please fill in the title, instructions, and deadline.')
+      return
+    }
     try {
       const a = await apiFetch(`/classes/${cls.id}/assignments`, token, {
         method: 'POST',
-        body: JSON.stringify({ title, instructions: '', due_at: new Date(dueAt).toISOString() }),
+        body: JSON.stringify({ title: title.trim(), instructions: instructions.trim(), due_at: new Date(dueAt).toISOString() }),
       })
       setAssignments((prev) => [...prev, a])
       setShowModal(false)
       setTitle('')
+      setInstructions('')
       setDueAt('')
-    } catch (e) { alert(String(e)) }
+      setFormError('')
+    } catch {
+      setFormError('Could not save the mission — please try again.')
+    }
   }
 
   return (
@@ -197,7 +209,11 @@ function ClassDetail({ cls, token }: { cls: ClassInfo; token: string }) {
                   <tr key={a.id} className={i % 2 === 0 ? 'bg-white' : 'bg-warm/20'}>
                     <td className="py-3 px-4 border-t border-border-soft/60 font-medium">{a.title}</td>
                     <td className="py-3 px-4 border-t border-border-soft/60 text-muted">
-                      {new Date(a.due_at).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}
+                      {/* due_at is naive UTC from the API — format in browser tz, no double shift (issue #74). */}
+                      {formatDueAt(a.due_at)}
+                      {dueDayHint(a.due_at) && (
+                        <span className="ml-2 text-xs font-display font-bold text-teal-dark">({dueDayHint(a.due_at)})</span>
+                      )}
                     </td>
                   </tr>
                 ))}
@@ -226,15 +242,21 @@ function ClassDetail({ cls, token }: { cls: ClassInfo; token: string }) {
             <label className="block font-display text-sm font-bold mb-1.5" htmlFor="m-title">Title</label>
             <input id="m-title" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="e.g. Fraction Pizza Party"
                    className="input-warm rounded-xl px-4 py-2.5 w-full mb-4" />
+            <label className="block font-display text-sm font-bold mb-1.5" htmlFor="m-instructions">Instructions</label>
+            <textarea id="m-instructions" value={instructions} onChange={(e) => setInstructions(e.target.value)} rows={3}
+                      placeholder="What should students do in this mission?"
+                      className="input-warm rounded-2xl p-4 w-full resize-none mb-4" />
             <label className="block font-display text-sm font-bold mb-1.5" htmlFor="m-due">Deadline</label>
             <input id="m-due" type="datetime-local" value={dueAt} onChange={(e) => setDueAt(e.target.value)}
-                   className="input-warm rounded-xl px-4 py-2.5 w-full mb-6" />
+                   className="input-warm rounded-xl px-4 py-2.5 w-full mb-4" />
+            {formError && <p className="text-sm text-coral-deep font-semibold mb-4">{formError}</p>}
             <div className="flex gap-2 justify-end">
               <button onClick={() => setShowModal(false)}
                       className="px-5 py-2.5 rounded-full border-2 border-border-soft bg-warm font-display text-sm font-bold hover:bg-white transition-colors">
                 Cancel
               </button>
-              <button onClick={createAssignment} disabled={!title || !dueAt}
+              {/* Inline validation on click — the error message explains what's missing (issue #52). */}
+              <button onClick={createAssignment}
                       className="btn-push-coral px-6 py-2.5 rounded-full bg-coral text-white font-display text-sm font-bold disabled:opacity-40 disabled:shadow-none">
                 Save 🚀
               </button>

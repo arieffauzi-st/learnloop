@@ -9,6 +9,7 @@ import Dashboard from './pages/Dashboard'
 import ParentDashboard from './pages/ParentDashboard'
 import StudentDashboard from './pages/StudentDashboard'
 import TeacherDashboard from './pages/TeacherDashboard'
+import NotFound from './pages/NotFound'
 
 // "/" langsung mengarah ke tujuan yang berguna: sudah login -> dashboard,
 // belum -> halaman login (landing page tersedia di /welcome? tidak - dihapus dari rute default).
@@ -29,6 +30,8 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/teacher" element={<RequireRole role="teacher"><TeacherDashboard /></RequireRole>} />
           <Route path="/student" element={<RequireRole role="student"><StudentDashboard /></RequireRole>} />
           <Route path="/parent" element={<RequireRole role="parent"><ParentDashboard /></RequireRole>} />
+          {/* Unknown routes: friendly 404 instead of a blank page (issue #53). */}
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </AuthProviderWrapper>
     </BrowserRouter>
