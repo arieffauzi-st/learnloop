@@ -60,10 +60,20 @@ export default function ParentDashboard() {
       apiFetch('/parent/children', token)
         .then((kids: Child[]) => { setChildren(kids); setSelected(kids[0] ?? null) })
         .catch(() => {})
-    } catch {
-      // Friendly message instead of raw API error JSON (issue #52).
-      setMsg('Invalid code — ask your child for the current code')
-      setMsgIsError(true)
+    } catch (e) {
+      // Friendly messages instead of raw API error JSON (issue #52).
+      // apiFetch throws Error("<status> <body>")
+      const status = Number((e as Error)?.message?.split(' ')[0])
+      if (status === 409) {
+        setMsg('Already connected to this child ✅')
+        setMsgIsError(false)
+      } else if (status === 422) {
+        setMsg('Cannot use that code (self-link or parent child limit reached)')
+        setMsgIsError(true)
+      } else {
+        setMsg('Invalid code — ask your child for the current code')
+        setMsgIsError(true)
+      }
     }
   }
 
