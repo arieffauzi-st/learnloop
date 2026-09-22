@@ -19,19 +19,15 @@ export default function LoginPage() {
   if (auth.isAuthenticated) return <Navigate to="/dashboard" replace />
 
   const signup = () => {
-    // Realm-scoped registration endpoint (issue #73): the Keycloak realm admin
-    // console path is not user-facing; the correct client-initiated registration
-    // redirect is {issuer}/protocol/openid-connect/registrations.
-    const issuer =
-      import.meta.env.VITE_KEYCLOAK_ISSUER ?? 'http://localhost:8080/realms/learnloop'
-    const url = new URL(issuer + '/protocol/openid-connect/registrations')
-    url.searchParams.set('client_id', 'learnloop-web')
-    url.searchParams.set('redirect_uri', window.location.origin + '/login')
-    url.searchParams.set('response_type', 'code')
-    url.searchParams.set('scope', 'openid')
-    url.searchParams.set('ui_locales', 'en')
-    if (picked) url.searchParams.set('role', picked) // read by the custom register theme to prefill the role attribute (issue #54)
-    window.location.href = url.toString()
+    // Registration via the authorize endpoint with prompt=create (Keycloak OIDC
+    // extension). Going through oidc-client keeps PKCE intact - the previous
+    // hand-built registrations URL was rejected with invalid_request
+    // "Missing parameter: code_challenge_method" (QA follow-up to #73/#76).
+    // The picked role rides along as a query param that the custom register
+    // theme reads to prefill the role attribute (issue #54).
+    const extra: Record<string, string> = { prompt: 'create', ui_locales: 'en' }
+    if (picked) extra.role = picked
+    void auth.signinRedirect({ extraQueryParams: extra })
   }
 
   return (
