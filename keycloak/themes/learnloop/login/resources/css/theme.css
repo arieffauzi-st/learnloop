@@ -178,3 +178,54 @@ body::after {
 
 /* Registration required-field marker */
 .ll-col .required { color: var(--ll-coral); }
+
+/* ── Responsive (mobile-first fixes) ─────────────────────────── */
+
+/* Tablet & phone */
+@media (max-width: 768px) {
+  /* center the card, give it breathing room */
+  #kc-content {
+    max-width: 100%;
+    padding: 1.4rem 1.1rem;
+    border-radius: 14px;
+    margin: 0 1rem;
+  }
+
+  #kc-header { padding: 0 1rem; }
+  .ll-brand-name { font-size: 1.4rem; }
+  .ll-logo { width: 2.6rem; height: 2.6rem; border-radius: 11px; }
+  .ll-title { font-size: 1.3rem; }
+  .ll-subtitle { font-size: 0.88rem; }
+
+  /* comfortable touch targets; 16px prevents iOS zoom-on-focus */
+  .ll-input {
+    font-size: 16px;
+    padding: 0.75rem 0.85rem;
+  }
+  .ll-label { font-size: 0.82rem; }
+
+  .ll-button, .ll-button-primary, .ll-button-block, .ll-button-large {
+    padding: 0.8rem 1rem;
+    font-size: 1rem;
+  }
+
+  .ll-social-btn { padding: 0.7rem; }
+
+  /* ambient glows: shrink so they don't push layout width */
+  .login-pf body::before, body::before { width: 12rem; height: 12rem; }
+  .login-pf body::after, body::after { width: 13rem; height: 13rem; }
+
+  /* form options (remember-me / forgot) stack if tight */
+  .ll-setting, .ll-form-options { flex-wrap: wrap; gap: 0.4rem; }
+}
+
+/* Very small phones */
+@media (max-width: 360px) {
+  #kc-content { padding: 1.1rem 0.9rem; margin: 0 0.6rem; }
+  .ll-title { font-size: 1.15rem; }
+}
+
+/* Desktop: keep the card visually centered & roomy */
+@media (min-width: 769px) {
+  #kc-content { margin: 0 auto; }
+}
