@@ -34,29 +34,40 @@ def _code(n: int) -> str:
 def _reconcile_demo_users(db) -> None:
     """Merge duplicate profile rows per demo username (realm re-imports change
     keycloak_sub, which used to spawn a second row). Keeps the newest row and
-    re-points every FK to it, so demo data follows the live account."""
-    from app.models import Assignment  # noqa: F401
+    re-points every FK to it via raw SQL (the ORM identity map is not reliable
+    here), so demo data follows the live account."""
+    from sqlalchemy import text as _text
+
     for name, _, _ in DEMO_USERS:
-        rows = db.query(User).filter(User.name == name).order_by(User.id).all()
-        if len(rows) <= 1:
+        ids = [row[0] for row in db.execute(
+            _text("SELECT id FROM users WHERE name = :n ORDER BY id"), {"n": name}
+        ).fetchall()]
+        if len(ids) <= 1:
             continue
-        keep = rows[-1]
-        stale_ids = [u.id for u in rows[:-1]]
-        for other in rows[:-1]:
-            for cls in db.query(Class_).filter(Class_.teacher_id == other.id).all():
-                cls.teacher_id = keep.id
-            for e in db.query(Enrollment).filter(Enrollment.student_id == other.id).all():
-                e.student_id = keep.id
-            for s in db.query(Submission).filter(Submission.student_id == other.id).all():
-                s.student_id = keep.id
-            for pl in db.query(ParentLink).filter(ParentLink.parent_id == other.id).all():
-                pl.parent_id = keep.id
-            for pl in db.query(ParentLink).filter(ParentLink.student_id == other.id).all():
-                pl.student_id = keep.id
-            for lc in db.query(LinkCode).filter(LinkCode.student_id == other.id).all():
-                lc.student_id = keep.id
-            # assignments belong to classes (cascade via teacher), nothing to move
-        db.query(User).filter(User.id.in_(stale_ids)).delete(synchronize_session=False)
+        keep = ids[-1]
+        for stale in ids[:-1]:
+            db.execute(_text("UPDATE classes SET teacher_id = :k WHERE teacher_id = :s"),
+                       {"k": keep, "s": stale})
+            db.execute(_text("UPDATE enrollments SET student_id = :k WHERE student_id = :s"),
+                       {"k": keep, "s": stale})
+            db.execute(_text("UPDATE submissions SET student_id = :k WHERE student_id = :s"),
+                       {"k": keep, "s": stale})
+            db.execute(_text("UPDATE parent_links SET parent_id = :k WHERE parent_id = :s"),
+                       {"k": keep, "s": stale})
+            db.execute(_text("UPDATE parent_links SET student_id = :k WHERE student_id = :s"),
+                       {"k": keep, "s": stale})
+            db.execute(_text("UPDATE link_codes SET student_id = :k WHERE student_id = :s"),
+                       {"k": keep, "s": stale})
+            db.execute(_text("DELETE FROM users WHERE id = :s"), {"s": stale})
+        # collapse duplicates the merge may create
+        db.execute(_text(
+            "DELETE FROM enrollments WHERE id NOT IN "
+            "(SELECT MIN(id) FROM enrollments GROUP BY class_id, student_id)"))
+        db.execute(_text(
+            "DELETE FROM parent_links WHERE created_at NOT IN "
+            "(SELECT MIN(created_at) FROM parent_links GROUP BY parent_id, student_id)"))
+        db.execute(_text(
+            "DELETE FROM link_codes WHERE student_id NOT IN (SELECT id FROM users)"))
         db.commit()
 
 
