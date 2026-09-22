@@ -8,7 +8,7 @@ import secrets
 from datetime import UTC, datetime
 
 from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 from sqlalchemy.orm import Session
 
 from app.core.security import require_role
@@ -34,6 +34,19 @@ class SubmitRequest(BaseModel):
     text: str = ""
     link_url: str | None = None
     expected_version: int | None = None  # optimistic concurrency
+
+    @field_validator("link_url")
+    @classmethod
+    def _safe_link(cls, v: str | None) -> str | None:
+        """Only http(s) links, length-capped (issue #65: stored-XSS via javascript: URIs)."""
+        if v is None:
+            return v
+        v = v.strip()
+        if not v:
+            return None
+        if len(v) > 2048 or not v.lower().startswith(("http://", "https://")):
+            raise ValueError("link_url must be an http(s) URL")
+        return v
 
 
 def _now() -> datetime:
