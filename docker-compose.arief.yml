@@ -12,6 +12,11 @@ services:
       KC_HEALTH_ENABLED: "true"
     volumes:
       - kc-import:/opt/keycloak/data/import:ro
+      # Theme source: Jenkins tars keycloak/ into the kc-import volume, so
+      # keycloak/themes/learnloop lands at /opt/keycloak/data/import/themes/learnloop.
+      # Mounting the same volume at the Keycloak themes dir makes the 'learnloop'
+      # theme available (realm-export.json also lives there but is ignored as a theme).
+      - kc-import:/opt/keycloak/themes:ro
     expose:
       - "8080"
     networks: [arief_proxy]
