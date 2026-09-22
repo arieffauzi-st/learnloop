@@ -60,3 +60,11 @@ Single deployable backend, one SQLite file, self-hosted Keycloak. Full details i
 ## CI
 
 Jenkins (`Jenkinsfile`): backend `ruff` + `pytest` · frontend `tsc` + `vitest` + `build` · `docker compose config` validation — on every PR and push to `main`.
+
+
+## Security notes
+
+- No secrets live in this repository — all configuration is 12-factor via environment variables (see `.env.example`).
+- The demo accounts (`*-demo` / `demo-password`) are **intentional** for trying the live demo; they contain only seeded data and cannot access real users (sub re-linking is restricted, see issue #58).
+- Backend authorization is enforced server-side per role; JWTs are RS256 validated against Keycloak's JWKS.
+- Before forking for production: rotate all demo credentials, remove demo users from `keycloak/realm-export.json`, and set a strong `KC_ADMIN_PASSWORD`.
