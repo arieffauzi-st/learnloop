@@ -29,7 +29,8 @@ export default function LoginPage() {
     url.searchParams.set('redirect_uri', window.location.origin + '/login')
     url.searchParams.set('response_type', 'code')
     url.searchParams.set('scope', 'openid')
-    if (picked) url.searchParams.set('ui_locales', 'en')
+    url.searchParams.set('ui_locales', 'en')
+    if (picked) url.searchParams.set('role', picked) // read by the custom register theme to prefill the role attribute (issue #54)
     window.location.href = url.toString()
   }
 
