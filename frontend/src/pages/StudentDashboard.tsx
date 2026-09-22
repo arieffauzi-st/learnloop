@@ -56,9 +56,15 @@ export default function StudentDashboard() {
       setMsg(`Welcome to ${r.class_name}! 🎉`)
       setMsgIsError(false)
       setJoinCode('')
-    } catch {
-      // Friendly message instead of raw API error JSON (issue #52).
-      setMsg('Invalid code — check with your teacher')
+    } catch (e) {
+      // Friendly messages instead of raw API error JSON (issue #52).
+      // apiFetch throws Error("<status> <body>")
+      const status = Number((e as Error)?.message?.split(' ')[0])
+      if (status === 409) {
+        setMsg("You're already in this class — pick a mission below! 🎒")
+      } else {
+        setMsg('Invalid code — check with your teacher')
+      }
       setMsgIsError(true)
     }
   }
