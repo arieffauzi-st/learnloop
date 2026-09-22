@@ -107,6 +107,24 @@ html, body { height: 100%; }
   text-align: left;
 }
 #kc-header { width: 100%; }
+/* Base theme's bootstrap grid squeezes the page into a left column — neutralize */
+.ll-content-wrapper,
+#kc-content-wrapper,
+.login-pf .container, .login-pf .row, .login-pf [class*="col-md-"], .login-pf [class*="col-lg-"] {
+  width: 100% !important;
+  max-width: 30rem;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  float: none !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+#kc-page-title, .ll-title, .ll-subtitle, #kc-header, .ll-brand {
+  text-align: center !important;
+  margin-left: auto;
+  margin-right: auto;
+  justify-content: center;
+}
 /* neutralize Keycloak's own split/grid wrappers if present */
 .login-pf .pf-v5-l-split, .login-pf .pf-v5-l-split__item { width: 100%; max-width: none; padding: 0; }
 
@@ -212,31 +230,32 @@ html, body { height: 100%; }
 
 /* Tablet & phone */
 @media (max-width: 768px) {
-  .login-pf body { padding: 1.25rem 0.75rem; }
+  .login-pf body { padding: 1.5rem 1rem; }
 
   #kc-content {
-    padding: 1.4rem 1.1rem;
-    border-radius: 14px;
+    padding: 1.75rem 1.4rem;
+    border-radius: 16px;
   }
 
-  .ll-brand-name { font-size: 1.4rem; }
-  .ll-logo { width: 2.6rem; height: 2.6rem; border-radius: 11px; }
-  .ll-title { font-size: 1.3rem; }
-  .ll-subtitle { font-size: 0.88rem; }
+  .ll-brand-name { font-size: 1.6rem; }
+  .ll-logo { width: 3rem; height: 3rem; border-radius: 13px; }
+  .ll-title { font-size: 1.55rem; }
+  .ll-subtitle { font-size: 1rem; }
+  .ll-label { font-size: 0.95rem; }
+  #kc-registration { font-size: 1rem; }
 
   /* comfortable touch targets; 16px prevents iOS zoom-on-focus */
   .ll-input {
     font-size: 16px;
-    padding: 0.75rem 0.85rem;
+    padding: 0.85rem 1rem;
   }
-  .ll-label { font-size: 0.82rem; }
 
   .ll-button, .ll-button-primary, .ll-button-block, .ll-button-large {
-    padding: 0.8rem 1rem;
-    font-size: 1rem;
+    padding: 0.9rem 1rem;
+    font-size: 1.1rem;
   }
 
-  .ll-social-btn { padding: 0.7rem; }
+  .ll-social-btn { padding: 0.8rem; font-size: 1rem; }
 
   /* ambient glows: shrink so they don't push layout width */
   .login-pf body::before, body::before { width: 12rem; height: 12rem; }
