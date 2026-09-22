@@ -2,71 +2,147 @@ import { useAuth } from 'react-oidc-context'
 import { Navigate } from 'react-router-dom'
 import { useState } from 'react'
 
-const ROLE_CARDS = [
-  { role: 'student', emoji: '🎒', label: 'Siswa', desc: 'Kerjakan tugas & kumpulkan XP' },
-  { role: 'teacher', emoji: '👩‍🏫', label: 'Guru', desc: 'Kelola kelas & tugas' },
-  { role: 'parent', emoji: '👨‍👩‍👧', label: 'Orang tua', desc: 'Pantau progres anak' },
+const ROLES = [
+  { role: 'student', emoji: '🎒', label: 'Student' },
+  { role: 'parent', emoji: '🏡', label: 'Parent' },
+  { role: 'teacher', emoji: '📚', label: 'Teacher' },
 ]
 
-/** Landing + login entry. Signup role selection happens on Keycloak's
- *  registration page via the `role` attribute (realm-export.json). */
+const oidcAuthority = () =>
+  (import.meta.env.VITE_KEYCLOAK_ISSUER ?? 'http://localhost:8080/realms/learnloop').replace(
+    /\/realms\/learnloop$/,
+    '',
+  )
+
+/** Login page (Stitch design: design/stitch/login). Real authentication is
+ *  delegated to Keycloak via OIDC redirect; the role picker pre-selects the
+ *  registration role for the signup flow. */
 export default function LoginPage() {
   const auth = useAuth()
   const [picked, setPicked] = useState<string | null>(null)
+  const [mode, setMode] = useState<'signin' | 'signup'>('signin')
 
   if (auth.isAuthenticated) return <Navigate to="/dashboard" replace />
 
   const signup = () => {
-    // store picked role for Keycloak registration prefill (via query — realm reads it via theme/freemarker)
+    // picked role is passed to Keycloak registration prefill (via query param)
     const url = new URL(oidcAuthority() + '/registrations?client_id=learnloop-web')
     if (picked) url.searchParams.set('role', picked)
     window.location.href = url.toString()
   }
 
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center gap-8 p-8">
-      <h1 className="text-4xl font-bold">LearnLoop</h1>
-      <p className="text-lg text-gray-600">Belajar seru, progres terpantau.</p>
+    <main className="min-h-screen bg-cream font-body text-ink flex items-center justify-center overflow-hidden">
+      {/* Ambient decorative glows */}
+      <div className="absolute -top-24 -left-20 w-80 h-80 rounded-full bg-teal/20 blur-3xl pointer-events-none" />
+      <div className="absolute top-1/3 -right-24 w-96 h-96 rounded-full bg-coral/30 blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-20 left-1/4 w-80 h-80 rounded-full bg-sunny/30 blur-3xl pointer-events-none" />
 
-      <button
-        onClick={() => void auth.signinRedirect()}
-        className="rounded-lg bg-blue-600 px-8 py-3 text-white text-lg font-semibold hover:bg-blue-700"
-      >
-        Masuk
-      </button>
+      <div className="w-full max-w-xl flex flex-col items-center relative z-10 p-4 md:p-6">
+        {/* Branding header */}
+        <header className="flex flex-col items-center text-center mb-6">
+          <div className="flex items-center gap-3 mb-1">
+            <div className="w-14 h-14 rounded-2xl bg-white p-2 shadow-md flex items-center justify-center">
+              <img alt="LearnLoop logo" className="w-full h-full object-contain" src="/assets/logo.png" />
+            </div>
+            <div className="text-left">
+              <span className="font-display text-3xl font-bold text-coral block leading-none tracking-tight">
+                LearnLoop
+              </span>
+              <span className="font-display text-xs font-bold text-teal-dark tracking-widest uppercase">
+                Kids &amp; School Hub
+              </span>
+            </div>
+          </div>
+          <div className="inline-flex items-center gap-1.5 px-4 py-1 bg-white/80 backdrop-blur-sm rounded-full shadow-sm">
+            <span className="text-xs font-semibold text-muted flex items-center gap-1">
+              Homework that feels like play <span className="text-sunny">✨</span>
+            </span>
+          </div>
+        </header>
 
-      <div className="w-full max-w-3xl">
-        <h2 className="text-center text-xl font-semibold mb-4">Daftar sebagai</h2>
-        <div className="grid grid-cols-3 gap-4">
-          {ROLE_CARDS.map((c) => (
-            <button
-              key={c.role}
-              onClick={() => setPicked(c.role)}
-              className={`rounded-xl border-2 p-6 text-center transition ${
-                picked === c.role ? 'border-blue-600 bg-blue-50' : 'border-gray-200 hover:border-blue-300'
-              }`}
-            >
-              <div className="text-4xl mb-2">{c.emoji}</div>
-              <div className="font-semibold">{c.label}</div>
-              <div className="text-sm text-gray-500">{c.desc}</div>
-            </button>
-          ))}
-        </div>
-        <button
-          onClick={signup}
-          disabled={!picked}
-          className="mt-6 w-full rounded-lg bg-emerald-600 px-8 py-3 text-white font-semibold disabled:opacity-40"
+        {/* Mode pill switcher */}
+        <nav
+          aria-label="Authentication mode"
+          className="w-full max-w-sm mb-6 bg-warm p-1 rounded-full flex shadow-sm border border-border-soft"
         >
-          Lanjut daftar{picked ? ` sebagai ${picked}` : ''}
-        </button>
+          <button
+            type="button"
+            onClick={() => setMode('signin')}
+            className={`flex-1 py-2.5 px-4 rounded-full font-display text-sm font-bold text-center transition-all ${
+              mode === 'signin' ? 'bg-white text-coral shadow-sm' : 'text-muted hover:text-ink'
+            }`}
+          >
+            Sign in 🎒
+          </button>
+          <button
+            type="button"
+            onClick={() => setMode('signup')}
+            className={`flex-1 py-2.5 px-4 rounded-full font-display text-sm font-bold text-center transition-all ${
+              mode === 'signup' ? 'bg-white text-coral shadow-sm' : 'text-muted hover:text-ink'
+            }`}
+          >
+            Create account 🌱
+          </button>
+        </nav>
+
+        {/* Auth card */}
+        <div className="w-full bg-white rounded-3xl shadow-xl p-6 md:p-10 border border-border-soft">
+          <div className="mb-6 text-center md:text-left">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-teal/15 text-teal-dark font-display text-xs font-bold mb-1">
+              <span>🌟</span> Adventure awaits!
+            </div>
+            <h1 className="font-display text-3xl font-bold text-ink">
+              Welcome back! <span className="inline-block animate-bounce">👋</span>
+            </h1>
+            <p className="text-muted mt-1">
+              {mode === 'signin'
+                ? 'Sign in to continue your learning adventure today.'
+                : 'Create your account and join the fun.'}
+            </p>
+          </div>
+
+          {/* Role selector */}
+          <div className="flex items-center gap-2 mb-6 bg-warm p-1.5 rounded-2xl border border-border-soft">
+            <span className="text-xs font-semibold text-muted pl-2">I am a:</span>
+            <div className="flex-1 flex gap-1.5">
+              {ROLES.map((r) => (
+                <button
+                  key={r.role}
+                  type="button"
+                  onClick={() => setPicked(r.role)}
+                  aria-pressed={picked === r.role}
+                  className={`flex-1 py-1.5 px-2 rounded-xl font-display text-sm font-bold flex items-center justify-center gap-1 transition-all ${
+                    picked === r.role
+                      ? 'bg-white text-coral shadow-sm'
+                      : 'text-muted hover:bg-white/60'
+                  }`}
+                >
+                  <span>{r.emoji}</span> {r.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* CTA */}
+          <button
+            type="button"
+            onClick={() => (mode === 'signin' ? void auth.signinRedirect() : signup())}
+            disabled={!picked && mode === 'signup'}
+            className="btn-push-coral w-full h-12 rounded-full bg-coral text-white font-display text-base font-bold disabled:opacity-40 disabled:shadow-none"
+          >
+            {mode === 'signin'
+              ? 'Let’s go! 🚀'
+              : picked
+                ? `Continue as ${picked.toLowerCase()} →`
+                : 'Pick a role to continue'}
+          </button>
+
+          <p className="text-xs text-muted text-center mt-4">
+            You’ll be redirected to our secure sign-in page.
+          </p>
+        </div>
       </div>
     </main>
-  )
-}
-
-function oidcAuthority() {
-  return (import.meta.env.VITE_KEYCLOAK_ISSUER ?? 'http://localhost:8080/realms/learnloop').replace(
-    /\/realms\/learnloop$/,
-    '',
   )
 }
