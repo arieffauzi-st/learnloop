@@ -141,5 +141,7 @@
         }
       ]
     }
-  ]
+  ],
+  "loginTheme": "learnloop",
+  "registrationTheme": "learnloop"
 }

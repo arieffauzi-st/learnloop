@@ -1,0 +1,180 @@
+/* LearnLoop login theme — "Playful Warmth"
+   Palette: cream #FFF9F0, coral #FF6B6B, teal #4ECDC4, sunny #FFD93D
+   Fonts: Quicksand (headlines), Inter (body) */
+
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@600;700&family=Inter:wght@400;500;600&display=swap');
+
+:root {
+  --ll-cream: #FFF9F0;
+  --ll-coral: #FF6B6B;
+  --ll-coral-dark: #E85555;
+  --ll-teal: #4ECDC4;
+  --ll-sunny: #FFD93D;
+  --ll-ink: #3A2E39;
+  --ll-muted: #7A6B73;
+  --ll-radius: 16px;
+}
+
+html body {
+  background-color: var(--ll-cream) !important;
+  font-family: 'Inter', system-ui, sans-serif !important;
+  color: var(--ll-ink) !important;
+}
+
+/* Decorative ambient glows */
+.login-pf body::before,
+body::before {
+  content: '';
+  position: fixed;
+  top: -6rem; left: -5rem;
+  width: 20rem; height: 20rem;
+  border-radius: 50%;
+  background: rgba(78, 205, 196, 0.18);
+  filter: blur(60px);
+  pointer-events: none;
+  z-index: 0;
+}
+.login-pf body::after,
+body::after {
+  content: '';
+  position: fixed;
+  bottom: -5rem; right: -6rem;
+  width: 22rem; height: 22rem;
+  border-radius: 50%;
+  background: rgba(255, 107, 107, 0.18);
+  filter: blur(60px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+#kc-header { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 0; margin-bottom: 1.25rem; }
+#kc-header-wrapper { padding: 0; letter-spacing: normal; }
+
+.ll-brand { display: flex; align-items: center; gap: 0.65rem; margin-bottom: 0.75rem; }
+.ll-logo { width: 3.25rem; height: 3.25rem; border-radius: 14px; box-shadow: 0 4px 12px rgba(255, 107, 107, 0.35); }
+.ll-brand-name {
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 700;
+  font-size: 1.75rem;
+  color: var(--ll-coral);
+  letter-spacing: -0.02em;
+}
+.ll-title {
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 700;
+  font-size: 1.65rem;
+  line-height: 1.2;
+  margin: 0 0 0.35rem;
+  color: var(--ll-ink);
+}
+.ll-wave { display: inline-block; animation: ll-bounce 1.6s ease-in-out infinite; }
+@keyframes ll-bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+.ll-subtitle { margin: 0; color: var(--ll-muted); font-size: 0.95rem; }
+
+/* White rounded card */
+#kc-content, #kc-content-wrapper { width: 100%; max-width: 28rem; }
+#kc-content {
+  background: #ffffff;
+  border-radius: var(--ll-radius);
+  box-shadow: 0 12px 32px rgba(58, 46, 57, 0.12);
+  padding: 2rem;
+  border: 1px solid rgba(224, 191, 189, 0.4);
+}
+
+#kc-form { width: 100%; }
+.ll-form, .ll-form-group { margin-bottom: 1.1rem; }
+.ll-label {
+  display: block;
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--ll-ink);
+  margin-bottom: 0.4rem;
+}
+.ll-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.7rem 0.9rem;
+  border: 2px solid #EAE0D5;
+  border-radius: 10px;
+  background: #FFFDF9;
+  font-size: 1rem;
+  font-family: 'Inter', sans-serif;
+  color: var(--ll-ink);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.ll-input:focus {
+  outline: none;
+  border-color: var(--ll-teal);
+  box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.25);
+}
+.ll-input-group { display: flex; gap: 0.4rem; align-items: stretch; }
+.ll-input-group .ll-input { flex: 1; }
+.ll-eye-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0 0.5rem;
+  color: var(--ll-muted);
+}
+.ll-eye-btn i { font-style: normal; }
+
+.ll-error {
+  display: block;
+  margin-top: 0.45rem;
+  color: #BA1A1A;
+  background: #FFDAD6;
+  border-radius: 8px;
+  padding: 0.4rem 0.7rem;
+  font-size: 0.85rem;
+}
+
+.ll-setting, .ll-form-options { display: flex; justify-content: space-between; align-items: center; }
+.ll-options a, #kc-registration a, .ll-form-options a {
+  color: var(--ll-teal);
+  font-weight: 600;
+  text-decoration: none;
+}
+.ll-options a:hover, #kc-registration a:hover, .ll-form-options a:hover { text-decoration: underline; }
+.checkbox label { color: var(--ll-muted); font-size: 0.9rem; }
+#kc-registration { text-align: center; margin-top: 1.25rem; color: var(--ll-muted); }
+
+/* Coral push-button */
+.ll-button, .ll-button-primary, .ll-button-block, .ll-button-large {
+  display: inline-block;
+  width: 100%;
+  background-color: var(--ll-coral) !important;
+  background-image: none !important;
+  color: #fff !important;
+  border: none;
+  border-radius: 999px !important;
+  padding: 0.85rem 1.5rem !important;
+  font-family: 'Quicksand', sans-serif !important;
+  font-weight: 700 !important;
+  font-size: 1.05rem !important;
+  cursor: pointer;
+  text-transform: none !important;
+  box-shadow: 0 6px 16px rgba(255, 107, 107, 0.35);
+  transition: background-color 0.15s, transform 0.1s;
+}
+.ll-button:hover, .ll-button-primary:hover { background-color: var(--ll-coral-dark) !important; }
+.ll-button:active { transform: translateY(1px); }
+.ll-form-buttons { margin-bottom: 0; }
+
+/* Alerts (login errors etc.) */
+#kc-messages-container .alert-error,
+.pf-v5-c-alert { border-radius: 12px; }
+
+/* Social providers */
+.ll-social-list { list-style: none; padding: 0; margin: 0.75rem 0 0; display: grid; gap: 0.6rem; }
+.ll-social-btn {
+  display: block; text-align: center;
+  border: 2px solid #EAE0D5; border-radius: 999px;
+  padding: 0.6rem; background: #fff; color: var(--ll-ink);
+  text-decoration: none; font-weight: 600;
+}
+.ll-social-btn:hover { border-color: var(--ll-teal); }
+
+/* Registration required-field marker */
+.ll-col .required { color: var(--ll-coral); }
