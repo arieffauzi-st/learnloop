@@ -75,7 +75,7 @@ export default function LoginPage() {
           <button
             type="button"
             onClick={() => setMode('signin')}
-            className={`flex-1 py-2.5 px-4 rounded-full font-display text-sm font-bold text-center transition-all ${
+            className={`flex-1 py-2.5 px-4 min-h-[40px] rounded-full font-display text-sm font-bold text-center transition-all ${
               mode === 'signin' ? 'bg-white text-coral shadow-sm' : 'text-muted hover:text-ink'
             }`}
           >
@@ -84,7 +84,7 @@ export default function LoginPage() {
           <button
             type="button"
             onClick={() => setMode('signup')}
-            className={`flex-1 py-2.5 px-4 rounded-full font-display text-sm font-bold text-center transition-all ${
+            className={`flex-1 py-2.5 px-4 min-h-[40px] rounded-full font-display text-sm font-bold text-center transition-all ${
               mode === 'signup' ? 'bg-white text-coral shadow-sm' : 'text-muted hover:text-ink'
             }`}
           >
@@ -118,7 +118,7 @@ export default function LoginPage() {
                   type="button"
                   onClick={() => setPicked(r.role)}
                   aria-pressed={picked === r.role}
-                  className={`flex-1 py-1.5 px-2 rounded-xl font-display text-sm font-bold flex items-center justify-center gap-1 transition-all ${
+                  className={`flex-1 py-2.5 px-2 min-h-[40px] rounded-xl font-display text-sm font-bold flex items-center justify-center gap-1 transition-all ${
                     picked === r.role
                       ? 'bg-white text-coral shadow-sm'
                       : 'text-muted hover:bg-white/60'

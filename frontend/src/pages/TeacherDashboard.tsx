@@ -57,7 +57,7 @@ export default function TeacherDashboard() {
           </div>
           <button
             onClick={() => void auth.signoutRedirect()}
-            className="relative z-10 self-start md:self-center px-4 py-2 rounded-full border-2 border-border-soft bg-warm text-sm font-display font-bold hover:bg-white transition-colors"
+            className="relative z-10 self-start md:self-center px-4 py-2.5 min-h-[40px] rounded-full border-2 border-border-soft bg-warm text-sm font-display font-bold hover:bg-white transition-colors"
           >
             Sign out
           </button>
@@ -184,7 +184,7 @@ function ClassDetail({ cls, token }: { cls: ClassInfo; token: string }) {
             <button
               key={t}
               onClick={() => setTab(t)}
-              className={`px-5 py-2 rounded-full font-display text-sm font-bold transition-all ${
+              className={`px-5 py-2.5 min-h-[40px] rounded-full font-display text-sm font-bold transition-all ${
                 tab === t ? 'bg-white text-coral shadow-sm' : 'text-muted hover:text-ink'
               }`}
             >
@@ -196,11 +196,11 @@ function ClassDetail({ cls, token }: { cls: ClassInfo; token: string }) {
 
       {tab === 'assignments' && (
         <>
-          <div className="overflow-hidden rounded-2xl border border-border-soft">
+          <div className="overflow-x-auto rounded-2xl border border-border-soft">
             <table className="w-full text-sm">
               <thead>
                 <tr className="text-left bg-warm/60">
-                  <th className="py-3 px-4 font-display font-bold">Mission</th>
+                  <th className="py-3 px-4 font-display font-bold whitespace-nowrap">Mission</th>
                   <th className="py-3 px-4 font-display font-bold">Deadline</th>
                 </tr>
               </thead>
@@ -235,8 +235,8 @@ function ClassDetail({ cls, token }: { cls: ClassInfo; token: string }) {
       {tab === 'students' && <RosterList token={token} assignments={assignments} />}
 
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ink/40 backdrop-blur-sm">
-          <div className="bg-white rounded-3xl p-6 sm:p-8 w-full max-w-md shadow-2xl">
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-ink/40 backdrop-blur-sm">
+          <div className="bg-white rounded-t-3xl sm:rounded-3xl p-6 sm:p-8 w-full max-w-md shadow-2xl max-h-[92vh] overflow-y-auto">
             <h3 className="font-display text-xl font-bold mb-1">New mission</h3>
             <p className="text-sm text-muted mb-5">Students will see this as a quest in their dashboard.</p>
             <label className="block font-display text-sm font-bold mb-1.5" htmlFor="m-title">Title</label>
@@ -250,14 +250,14 @@ function ClassDetail({ cls, token }: { cls: ClassInfo; token: string }) {
             <input id="m-due" type="datetime-local" value={dueAt} onChange={(e) => setDueAt(e.target.value)}
                    className="input-warm rounded-xl px-4 py-2.5 w-full mb-4" />
             {formError && <p className="text-sm text-coral-deep font-semibold mb-4">{formError}</p>}
-            <div className="flex gap-2 justify-end">
+            <div className="flex flex-col-reverse sm:flex-row gap-2 justify-end">
               <button onClick={() => setShowModal(false)}
-                      className="px-5 py-2.5 rounded-full border-2 border-border-soft bg-warm font-display text-sm font-bold hover:bg-white transition-colors">
+                      className="px-5 py-2.5 min-h-[40px] rounded-full border-2 border-border-soft bg-warm font-display text-sm font-bold hover:bg-white transition-colors">
                 Cancel
               </button>
               {/* Inline validation on click — the error message explains what's missing (issue #52). */}
               <button onClick={createAssignment}
-                      className="btn-push-coral px-6 py-2.5 rounded-full bg-coral text-white font-display text-sm font-bold disabled:opacity-40 disabled:shadow-none">
+                      className="btn-push-coral px-6 py-2.5 min-h-[40px] rounded-full bg-coral text-white font-display text-sm font-bold disabled:opacity-40 disabled:shadow-none">
                 Save 🚀
               </button>
             </div>
@@ -297,7 +297,7 @@ function RosterList({ token, assignments }: { token: string; assignments: Assign
       >
         {assignments.map((a) => <option key={a.id} value={a.id}>{a.title}</option>)}
       </select>
-      <div className="overflow-hidden rounded-2xl border border-border-soft">
+      <div className="overflow-x-auto rounded-2xl border border-border-soft">
         <table className="w-full text-sm">
           <thead>
             <tr className="text-left bg-warm/60">

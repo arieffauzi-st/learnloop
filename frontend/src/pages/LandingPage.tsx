@@ -51,23 +51,23 @@ export default function LandingPage() {
               </span>
             </div>
           </div>
-          <h1 className="font-display text-4xl md:text-5xl font-bold tracking-tight">
+          <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight">
             Homework that feels like <span className="text-coral">play</span> <span className="inline-block">✨</span>
           </h1>
           <p className="text-muted mt-4 max-w-xl text-lg leading-relaxed">
             Missions, rewards and happy loops — the school hub where kids want to
             do their homework, and teachers and parents can see it all at a glance.
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-3 mt-6">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 mt-6 w-full sm:w-auto">
             <Link
               to="/login"
-              className="btn-push-coral px-8 py-3 rounded-full bg-coral text-white font-display font-bold"
+              className="btn-push-coral px-8 py-3 min-h-[44px] rounded-full bg-coral text-white font-display font-bold flex items-center justify-center"
             >
               Sign in 🎒
             </Link>
             <Link
               to="/login"
-              className="btn-push-teal px-8 py-3 rounded-full bg-teal text-white font-display font-bold"
+              className="btn-push-teal px-8 py-3 min-h-[44px] rounded-full bg-teal text-white font-display font-bold flex items-center justify-center"
             >
               Create account 🌱
             </Link>
@@ -94,7 +94,7 @@ export default function LandingPage() {
         <section aria-label="Try the demo" className="w-full mt-12">
           <h2 className="font-display text-2xl font-bold">Try the demo 👇</h2>
           <p className="text-muted mt-1">Pick a role and explore LearnLoop in action.</p>
-          <div className="grid sm:grid-cols-3 gap-4 mt-6">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
             {DEMO_ROLES.map((d) => (
               <Link
                 key={d.role}
