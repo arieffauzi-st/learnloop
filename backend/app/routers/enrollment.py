@@ -9,6 +9,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel, EmailStr, Field
 from sqlalchemy.orm import Session
 
+from app.core.security import require_role
 from app.db import get_db
 from app.models import TrialRequest
 
@@ -53,8 +54,9 @@ def book_trial(payload: TrialRequestIn, request: Request, db: Session = Depends(
 
 
 @router.get("/enrollment/trial/{trial_id}", response_model=TrialRequestOut)
-def get_trial(trial_id: int, db: Session = Depends(get_db)):
-    """Read-back endpoint (used by tests / future admin view)."""
+def get_trial(trial_id: int, db: Session = Depends(get_db),
+              _teacher: object = Depends(require_role("teacher"))):
+    """Read-back endpoint (teachers/admin only; was an unauthenticated PII leak, issue #60)."""
     tr = db.query(TrialRequest).filter(TrialRequest.id == trial_id).first()
     if tr is None:
         raise HTTPException(status_code=404, detail="not found")
