@@ -8,12 +8,6 @@ const ROLES = [
   { role: 'teacher', emoji: '📚', label: 'Teacher' },
 ]
 
-const oidcAuthority = () =>
-  (import.meta.env.VITE_KEYCLOAK_ISSUER ?? 'http://localhost:8080/realms/learnloop').replace(
-    /\/realms\/learnloop$/,
-    '',
-  )
-
 /** Login page (Stitch design: design/stitch/login). Real authentication is
  *  delegated to Keycloak via OIDC redirect; the role picker pre-selects the
  *  registration role for the signup flow. */
@@ -25,9 +19,17 @@ export default function LoginPage() {
   if (auth.isAuthenticated) return <Navigate to="/dashboard" replace />
 
   const signup = () => {
-    // picked role is passed to Keycloak registration prefill (via query param)
-    const url = new URL(oidcAuthority() + '/registrations?client_id=learnloop-web')
-    if (picked) url.searchParams.set('role', picked)
+    // Realm-scoped registration endpoint (issue #73): the Keycloak realm admin
+    // console path is not user-facing; the correct client-initiated registration
+    // redirect is {issuer}/protocol/openid-connect/registrations.
+    const issuer =
+      import.meta.env.VITE_KEYCLOAK_ISSUER ?? 'http://localhost:8080/realms/learnloop'
+    const url = new URL(issuer + '/protocol/openid-connect/registrations')
+    url.searchParams.set('client_id', 'learnloop-web')
+    url.searchParams.set('redirect_uri', window.location.origin + '/login')
+    url.searchParams.set('response_type', 'code')
+    url.searchParams.set('scope', 'openid')
+    if (picked) url.searchParams.set('ui_locales', 'en')
     window.location.href = url.toString()
   }
 
