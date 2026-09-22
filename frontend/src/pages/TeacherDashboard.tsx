@@ -44,10 +44,18 @@ export default function TeacherDashboard() {
 
   return (
     <main className="min-h-screen bg-cream font-body text-ink relative overflow-hidden">
+      {/* Page-level ambient glows (mock: layered blobs) */}
+      <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-sunny/20 blur-3xl pointer-events-none" />
+      <div className="absolute top-1/3 -right-32 w-96 h-96 rounded-full bg-coral/15 blur-3xl pointer-events-none" />
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
         {/* Header banner */}
-        <section className="relative overflow-hidden bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-border-soft flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <section className="relative overflow-hidden bg-white rounded-3xl p-6 md:p-8 shadow-lift border border-border-soft flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="absolute -top-12 -right-12 w-48 h-48 bg-coral/15 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-14 left-1/3 w-40 h-40 bg-teal/15 rounded-full blur-3xl pointer-events-none" />
+          {/* Playful sticker (mock: 🍎 next to the greeting) */}
+          <div className="absolute top-4 right-5 text-3xl -rotate-12 select-none pointer-events-none opacity-80">
+            🍎
+          </div>
           <div className="relative z-10">
             <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-coral/10 text-coral-deep font-display text-xs font-bold mb-1">
               <span>👩‍🏫</span> Teacher Ops
@@ -76,7 +84,7 @@ export default function TeacherDashboard() {
             {classes.map((c, i) => (
               <div
                 key={c.id}
-                className={`group relative rounded-3xl p-5 bg-white border border-border-soft shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between ${
+                className={`group relative rounded-3xl p-5 bg-white border border-border-soft shadow-lift hover:shadow-float transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between ${
                   selected?.id === c.id ? 'ring-2 ring-coral' : ''
                 }`}
               >
@@ -87,7 +95,11 @@ export default function TeacherDashboard() {
                 )}
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <div className="w-12 h-12 rounded-2xl bg-warm flex items-center justify-center text-2xl shadow-inner">
+                    <div
+                      className={`w-12 h-12 rounded-2xl flex items-center justify-center text-2xl shadow-inner ${
+                        ['bg-warm', 'bg-teal/15', 'bg-sunny/25', 'bg-lilac/15'][i % 4]
+                      }`}
+                    >
                       {CLASS_EMOJI[i % CLASS_EMOJI.length]}
                     </div>
                     <span className="px-2.5 py-1 rounded-full bg-teal/15 text-teal-dark font-display text-xs font-bold font-mono">
@@ -106,7 +118,7 @@ export default function TeacherDashboard() {
             ))}
 
             {/* Create class card */}
-            <div className="rounded-3xl p-5 border-2 border-dashed border-border-soft bg-warm/40 flex flex-col justify-center gap-3">
+            <div className="rounded-3xl p-5 dashed-playful bg-warm/40 flex flex-col justify-center gap-3">
               <span className="text-3xl">➕</span>
               <label className="font-display text-sm font-bold" htmlFor="new-class">New class</label>
               <input
@@ -169,10 +181,10 @@ function ClassDetail({ cls, token }: { cls: ClassInfo; token: string }) {
   }
 
   return (
-    <section className="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-border-soft">
+    <section className="bg-white rounded-3xl p-6 md:p-8 shadow-lift border border-border-soft">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-2xl bg-warm flex items-center justify-center text-2xl shadow-inner">📘</div>
+          <div className="w-12 h-12 rounded-2xl bg-sunny/25 flex items-center justify-center text-2xl shadow-inner -rotate-3">📘</div>
           <div>
             <h3 className="font-display text-2xl font-bold">{cls.name}</h3>
             <p className="text-sm text-muted">Assign homework missions and track who has turned them in.</p>

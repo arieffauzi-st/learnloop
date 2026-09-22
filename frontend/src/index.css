@@ -55,6 +55,23 @@ body {
   box-shadow: 0 1px 0 var(--color-teal-dark);
 }
 
+/* Layered soft card shadows (mockups use stacked ambient shadows) */
+.shadow-lift {
+  box-shadow:
+    0 8px 24px -4px rgba(45, 52, 54, 0.06),
+    0 2px 6px rgba(45, 52, 54, 0.04);
+}
+.shadow-float {
+  box-shadow:
+    0 16px 40px -8px rgba(45, 52, 54, 0.12),
+    0 4px 12px rgba(255, 107, 107, 0.06);
+}
+
+/* Playful dashed sticker border (design/stitch empty-state + create cards) */
+.dashed-playful {
+  border: 2px dashed var(--color-border-soft);
+}
+
 /* Design-system input focus (DESIGN.md component 7) */
 .input-warm {
   border: 2px solid var(--color-border-soft);

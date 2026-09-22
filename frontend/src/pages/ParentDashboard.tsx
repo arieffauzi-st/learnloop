@@ -79,10 +79,18 @@ export default function ParentDashboard() {
 
   return (
     <main className="min-h-screen bg-cream font-body text-ink relative overflow-hidden">
+      {/* Page-level ambient glows (mock: layered blobs) */}
+      <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-lilac/15 blur-3xl pointer-events-none" />
+      <div className="absolute top-1/2 -right-32 w-96 h-96 rounded-full bg-sunny/15 blur-3xl pointer-events-none" />
       <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 py-6 space-y-8">
         {/* Header banner */}
-        <section className="relative overflow-hidden bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-border-soft flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <section className="relative overflow-hidden bg-white rounded-3xl p-6 md:p-8 shadow-lift border border-border-soft flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="absolute -top-12 -right-12 w-48 h-48 bg-lilac/20 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-14 left-1/4 w-40 h-40 bg-teal/15 rounded-full blur-3xl pointer-events-none" />
+          {/* Playful sticker (mock: parent hero card) */}
+          <div className="absolute top-4 right-5 text-3xl rotate-6 select-none pointer-events-none opacity-80">
+            💌
+          </div>
           <div className="relative z-10">
             <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-lilac/15 text-[#6c5ce7] font-display text-xs font-bold mb-1">
               <span>🏡</span> Parent View
@@ -119,7 +127,7 @@ export default function ParentDashboard() {
         </section>
 
         {children.length === 0 ? (
-          <div className="rounded-3xl border-2 border-dashed border-border-soft bg-warm/40 p-10 text-center">
+          <div className="rounded-3xl dashed-playful bg-warm/40 p-10 text-center">
             <p className="font-display font-bold text-lg">No children connected yet 🌱</p>
             <p className="text-sm text-muted mt-1">Enter the connection code from your child's dashboard to start following their progress.</p>
           </div>
@@ -144,28 +152,22 @@ export default function ParentDashboard() {
 
             {summary && (
               <>
-                {/* Stat cards */}
+                {/* Stat cards (mock: tinted icon tiles, playful rotations) */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div className="bg-white rounded-3xl p-5 shadow-sm border border-border-soft">
-                    <span className="text-2xl">🏅</span>
-                    <div className="font-display text-2xl font-extrabold mt-1">Level {summary.level}</div>
-                    <div className="text-xs text-muted font-semibold">Current level</div>
-                  </div>
-                  <div className="bg-white rounded-3xl p-5 shadow-sm border border-border-soft">
-                    <span className="text-2xl">⭐</span>
-                    <div className="font-display text-2xl font-extrabold mt-1">{summary.xp} XP</div>
-                    <div className="text-xs text-muted font-semibold">Experience earned</div>
-                  </div>
-                  <div className="bg-white rounded-3xl p-5 shadow-sm border border-border-soft">
-                    <span className="text-2xl">🔥</span>
-                    <div className="font-display text-2xl font-extrabold mt-1">{summary.streak} Days</div>
-                    <div className="text-xs text-muted font-semibold">Learning streak</div>
-                  </div>
-                  <div className="bg-white rounded-3xl p-5 shadow-sm border border-border-soft">
-                    <span className="text-2xl">📌</span>
-                    <div className="font-display text-2xl font-extrabold mt-1">{summary.on_time} / {summary.late}</div>
-                    <div className="text-xs text-muted font-semibold">On time / late</div>
-                  </div>
+                  {[
+                    { emoji: '🏅', main: `Level ${summary.level}`, sub: 'Current level', tile: 'bg-teal/15', rot: '-rotate-2' },
+                    { emoji: '⭐', main: `${summary.xp} XP`, sub: 'Experience earned', tile: 'bg-sunny/30', rot: 'rotate-2' },
+                    { emoji: '🔥', main: `${summary.streak} Days`, sub: 'Learning streak', tile: 'bg-coral/15', rot: '-rotate-2' },
+                    { emoji: '📌', main: `${summary.on_time} / ${summary.late}`, sub: 'On time / late', tile: 'bg-lilac/15', rot: 'rotate-2' },
+                  ].map((s) => (
+                    <div key={s.sub} className="bg-white rounded-3xl p-5 shadow-lift border border-border-soft hover:-translate-y-0.5 transition-transform">
+                      <div className={`w-11 h-11 rounded-2xl flex items-center justify-center text-2xl shadow-inner ${s.tile} ${s.rot}`}>
+                        {s.emoji}
+                      </div>
+                      <div className="font-display text-2xl font-extrabold mt-2">{s.main}</div>
+                      <div className="text-xs text-muted font-semibold">{s.sub}</div>
+                    </div>
+                  ))}
                 </div>
 
                 {/* XP per class */}

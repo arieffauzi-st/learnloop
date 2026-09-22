@@ -93,7 +93,11 @@ export default function LoginPage() {
         </nav>
 
         {/* Auth card */}
-        <div className="w-full bg-white rounded-3xl shadow-xl p-6 md:p-10 border border-border-soft">
+        <div className="w-full bg-white rounded-3xl shadow-float p-6 md:p-10 border border-border-soft relative">
+          {/* Playful corner sticker (mock: 🌟 badge on the card) */}
+          <div className="absolute -top-4 -right-3 w-12 h-12 rounded-full bg-sunny flex items-center justify-center text-xl shadow-md rotate-12 select-none">
+            ⭐
+          </div>
           <div className="mb-6 text-center md:text-left">
             <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-teal/15 text-teal-dark font-display text-xs font-bold mb-1">
               <span>🌟</span> Adventure awaits!
@@ -147,6 +151,15 @@ export default function LoginPage() {
           <p className="text-xs text-muted text-center mt-4">
             You’ll be redirected to our secure sign-in page.
           </p>
+          {/* Trust & safety chip row (mock footer badge) */}
+          <div className="mt-5 pt-4 border-t border-warm flex flex-wrap items-center justify-center gap-2">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal/10 text-teal-dark text-xs font-bold">
+              🛡️ Kid-safe
+            </span>
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sunny/20 text-amber-warm text-xs font-bold">
+              🔒 Encrypted
+            </span>
+          </div>
         </div>
       </div>
     </main>

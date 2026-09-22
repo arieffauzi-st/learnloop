@@ -75,11 +75,19 @@ export default function StudentDashboard() {
 
   return (
     <main className="min-h-screen bg-cream font-body text-ink relative overflow-hidden">
+      {/* Page-level ambient glows (mock: layered blobs) */}
+      <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-teal/15 blur-3xl pointer-events-none" />
+      <div className="absolute top-1/2 -right-32 w-96 h-96 rounded-full bg-coral/15 blur-3xl pointer-events-none" />
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
         {/* Header stats banner */}
-        <section className="relative overflow-hidden bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-border-soft">
+        <section className="relative overflow-hidden bg-white rounded-3xl p-6 md:p-8 shadow-lift border border-border-soft">
           <div className="absolute -top-12 -right-12 w-48 h-48 bg-teal/25 rounded-full blur-3xl pointer-events-none" />
           <div className="absolute -bottom-16 -left-12 w-56 h-56 bg-coral/20 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-10 right-1/4 w-40 h-40 bg-sunny/25 rounded-full blur-3xl pointer-events-none" />
+          {/* Playful mascot sticker (mock: avatar decorations) */}
+          <div className="absolute top-4 right-5 text-3xl rotate-12 select-none pointer-events-none opacity-80">
+            🎒
+          </div>
           <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-6">
             {/* Profile */}
             <div className="flex items-center gap-4 w-full lg:w-auto">
@@ -141,7 +149,8 @@ export default function StudentDashboard() {
         </section>
 
         {/* Join a class */}
-        <section className="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-border-soft">
+        <section className="bg-white rounded-3xl p-6 md:p-8 shadow-lift border border-border-soft relative overflow-hidden">
+          <div className="absolute -top-10 -right-10 w-36 h-36 bg-lilac/15 rounded-full blur-3xl pointer-events-none" />
           <h2 className="font-display text-xl font-bold mb-1">Join a Class 🎒</h2>
           <p className="text-sm text-muted mb-4">Got a join code from your teacher? Enter it here to start the adventure.</p>
           <div className="flex gap-2">
@@ -257,7 +266,7 @@ function AssignmentList({ token, onOpen, emojiSeed }: {
         return (
           <div
             key={a.id}
-            className="group p-5 rounded-3xl bg-white hover:bg-warm/40 transition-all duration-200 shadow-sm hover:shadow-md border border-border-soft flex flex-col md:flex-row md:items-center justify-between gap-4"
+            className="group p-5 rounded-3xl bg-white hover:bg-warm/40 transition-all duration-200 shadow-lift hover:shadow-float hover:-translate-y-1 border border-border-soft flex flex-col md:flex-row md:items-center justify-between gap-4"
           >
             <div className="flex items-start sm:items-center gap-4">
               <div className="w-12 h-12 rounded-2xl bg-warm flex-shrink-0 flex items-center justify-center text-2xl shadow-inner group-hover:scale-105 transition-transform">
