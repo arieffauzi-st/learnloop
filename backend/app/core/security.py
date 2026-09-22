@@ -92,10 +92,19 @@ def get_current_user(request: Request, db: Session = Depends(get_db)) -> User:
     sub = claims["sub"]
     user = db.query(User).filter(User.keycloak_sub == sub).first()
     if user is None:
+        username = claims.get("preferred_username", "")
+        # Demo seeding creates profiles keyed by username before first login;
+        # link the real keycloak_sub the first time that account signs in.
+        user = db.query(User).filter(User.name == username).first() if username else None
+        if user is not None and user.keycloak_sub.startswith("pending-"):
+            user.keycloak_sub = sub
+            db.commit()
+            db.refresh(user)
+            return user
         user = User(
             keycloak_sub=sub,
             email=claims.get("email", f"{sub}@unknown.local"),
-            name=claims.get("preferred_username", sub),
+            name=username or sub,
             role=_role_from_claims(claims),
         )
         db.add(user)

@@ -28,6 +28,7 @@ services:
     container_name: learnloop-backend
     environment:
       DATABASE_URL: sqlite:////data/learnloop.db
+      SEED_DEMO: "1"
       KEYCLOAK_ISSUER: https://auth.ariefspace.xyz/realms/learnloop
       KEYCLOAK_AUDIENCE: learnloop-api
       CORS_ORIGINS: '["https://learnloop.ariefspace.xyz"]'

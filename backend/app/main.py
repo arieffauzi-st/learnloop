@@ -20,6 +20,16 @@ def create_tables() -> None:
     # call: "no such table: users").
     Base.metadata.create_all(get_engine())
 
+    import os
+
+    if os.environ.get("SEED_DEMO", "").lower() in ("1", "true", "yes"):
+        from app.seed_demo import seed_demo
+
+        try:
+            print("SEED_DEMO:", seed_demo())
+        except Exception as exc:  # noqa: BLE001 — never block startup on seeding
+            print("SEED_DEMO failed:", exc)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins,
