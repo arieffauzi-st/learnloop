@@ -91,13 +91,21 @@ def get_current_user(request: Request, db: Session = Depends(get_db)) -> User:
 
     sub = claims["sub"]
     user = db.query(User).filter(User.keycloak_sub == sub).first()
+    if user is not None:
+        role = _role_from_claims(claims)
+        if user.role != role:  # keep authorization in sync with the token (issue #62)
+            user.role = role
+            db.commit()
+            db.refresh(user)
     if user is None:
         username = claims.get("preferred_username", "")
         # Demo seeding creates profiles keyed by username before first login;
         # link the real keycloak_sub the first time that account signs in.
         user = db.query(User).filter(User.name == username).first() if username else None
-        if user is not None:
-            user.keycloak_sub = sub  # re-link: Keycloak subs can change on realm re-import
+        if user is not None and user.keycloak_sub.startswith("pending-"):
+            # demo-seeded profile: safe to bind to the real account (issue #58:
+            # never hijack a row already bound to another real account)
+            user.keycloak_sub = sub
             db.commit()
             db.refresh(user)
             return user
