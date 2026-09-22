@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Quicksand:wght@600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"primary-container":"#ff6b6b","surface-tint":"#ae2f34","outline-variant":"#e0bfbd","on-secondary-fixed-variant":"#00504c","on-secondary-container":"#006f69","on-tertiary-fixed-variant":"#554500","tertiary":"#705d00","tertiary-fixed-dim":"#e8c426","secondary-container":"#79f3ea","on-error":"#ffffff","on-secondary-fixed":"#00201e","secondary-fixed-dim":"#5dd9d0","primary-fixed":"#ffdad8","on-error-container":"#93000a","secondary-fixed":"#7cf6ec","surface-dim":"#d1dce0","on-tertiary":"#ffffff","on-surface-variant":"#584140","background":"#f1fbff","inverse-surface":"#283236","surface-container-lowest":"#ffffff","surface-container-high":"#dfeaef","on-secondary":"#ffffff","on-background":"#131d21","error":"#ba1a1a","on-primary":"#ffffff","surface-bright":"#f1fbff","surface-container-highest":"#d9e4e9","on-primary-fixed":"#410006","on-tertiary-container":"#4c3e00","surface-variant":"#d9e4e9","tertiary-fixed":"#ffe173","surface-container-low":"#eaf5fa","inverse-on-surface":"#e7f3f7","surface-container":"#e4f0f4","surface":"#f1fbff","outline":"#8c706f","primary":"#ae2f34","error-container":"#ffdad6","inverse-primary":"#ffb3b0","on-primary-fixed-variant":"#8c1520","on-primary-container":"#6d0010","primary-fixed-dim":"#ffb3b0","on-tertiary-fixed":"#221b00","secondary":"#006a65","on-surface":"#131d21","tertiary-container":"#caa800"},borderRadius:{DEFAULT:"0.25rem",lg:"0.5rem",xl:"0.75rem",full:"9999px"},spacing:{"space-xs":"0.25rem","gutter-mobile":"1rem","space-lg":"1.5rem","margin-mobile":"1rem",gutter:"1.5rem","space-xl":"2rem","space-sm":"0.5rem",margin:"2rem","space-2xl":"3rem","space-md":"1rem"},fontFamily:{"label-sm":["Quicksand"],"headline-lg":["Quicksand"],"label-md":["Quicksand"],"title-md":["Quicksand"],"body-sm":["Inter"],"headline-lg-mobile":["Quicksand"],"display-lg":["Quicksand"],"body-lg":["Inter"],"body-md":["Inter"],"headline-sm":["Quicksand"],"headline-md":["Quicksand"],"label-lg":["Quicksand"],"display-lg-mobile":["Quicksand"]},fontSize:{"label-sm":["12px",{lineHeight:"16px",fontWeight:"700"}],"headline-lg":["32px",{lineHeight:"40px",fontWeight:"700"}],"label-md":["14px",{lineHeight:"18px",fontWeight:"700"}],"title-md":["18px",{lineHeight:"24px",fontWeight:"600"}],"body-sm":["14px",{lineHeight:"20px",fontWeight:"400"}],"headline-lg-mobile":["26px",{lineHeight:"34px",fontWeight:"700"}],"display-lg":["48px",{lineHeight:"56px",fontWeight:"700"}],"body-lg":["18px",{lineHeight:"28px",fontWeight:"400"}],"body-md":["16px",{lineHeight:"24px",fontWeight:"400"}],"headline-sm":["20px",{lineHeight:"28px",fontWeight:"600"}],"headline-md":["24px",{lineHeight:"32px",fontWeight:"600"}],"label-lg":["16px",{lineHeight:"20px",fontWeight:"700"}],"display-lg-mobile":["36px",{lineHeight:"44px",fontWeight:"700"}]}}}}</script></head><body class="bg-surface font-body-md text-on-surface"><header class="fixed top-0 left-0 right-0 z-50 bg-surface/85 backdrop-blur-xl shadow-[0_4px_20px_rgba(45,52,54,0.05)]"><div class="h-20 w-full px-margin flex items-center justify-between gap-space-md"><div class="flex items-center gap-space-lg"><a class="flex items-center gap-space-sm group" data-path="home" href="#"><img alt="LearnLoop Logo" class="h-8 w-auto object-contain transition-transform group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDCktVszlL2CG3Vb8biaZKRWeadQHQLh_a8O-UKZLnaX4VFO4mUBdSZeqLVxqxaoJLgQmcwIloqRpq2Q41nnnHIZnIKOgPqHQaZWKWh1mfSaGiwMTGpsbYQKwfGHPrL6V7CnZxRMUBf7KT2_8Alm9jIcxFpS4iDq_Mm0YvXsGUB2fbUq9NaaseWYdM-M_J78uiA0XDA7tcyNQ2mIil7tL40JVwh4W2TelUXDi9BzzZi2Y53hEULsEG0"/><span class="font-headline-md text-headline-md text-primary tracking-tight font-bold">LearnLoop</span></a><nav class="hidden xl:flex items-center gap-space-xs bg-surface-container-low p-space-xs rounded-full" data-active-classes="bg-surface-container-high text-primary font-bold shadow-[0_2px_8px_rgba(0,0,0,0.04)]"><a class="px-space-md py-space-xs rounded-full font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all" data-path="home" href="#">Home</a><a class="px-space-md py-space-xs rounded-full font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all" data-path="student" href="#">Student</a><a class="px-space-md py-space-xs rounded-full font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all" data-path="teacher" href="#">Teacher</a><a aria-current="page" class="px-space-md py-space-xs rounded-full transition-all bg-surface-container-high text-primary font-bold shadow-[0_2px_8px_rgba(0,0,0,0.04)]" data-path="parent" href="#">Parent</a><a class="px-space-md py-space-xs rounded-full font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all" data-path="book-trial" href="#">Book Trial</a></nav></div><div class="flex items-center gap-space-sm"><div class="hidden md:flex items-center p-1 bg-surface-container-low rounded-full"><button class="px-space-sm py-space-xs rounded-full bg-surface-container-lowest text-primary shadow-[0_2px_6px_rgba(0,0,0,0.04)] font-label-sm text-label-sm flex items-center gap-1" type="button"><span class="material-symbols-outlined text-[16px]">school</span><span>Student</span></button><button class="px-space-sm py-space-xs rounded-full text-on-surface-variant hover:text-on-surface font-label-sm text-label-sm flex items-center gap-1" type="button"><span class="material-symbols-outlined text-[16px]">menu_book</span><span>Teacher</span></button><button class="px-space-sm py-space-xs rounded-full text-on-surface-variant hover:text-on-surface font-label-sm text-label-sm flex items-center gap-1" type="button"><span class="material-symbols-outlined text-[16px]">cottage</span><span>Parent</span></button></div><div class="hidden sm:flex items-center gap-1.5 px-space-sm py-1 bg-tertiary-fixed rounded-full text-on-tertiary-container font-label-sm text-label-sm shadow-[0_2px_4px_rgba(112,93,0,0.08)]"><span class="material-symbols-outlined text-[18px] text-tertiary">local_fire_department</span><span>Lvl 4</span></div><button aria-label="Notifications" class="relative p-2 rounded-full bg-surface-container-low text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" type="button"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-1 right-1 w-2.5 h-2.5 rounded-full bg-primary-container ring-2 ring-surface"></span></button><div class="flex items-center gap-space-xs pl-1 pr-space-xs py-1 bg-surface-container-low rounded-full"><img alt="Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDPt8PKLYPbH9pZW7WPpTs7gS-XyQFZ14S6wNV69DlqI0pjfzznhJXqplhoGef4WHGtxXJMvJhoIym9lfiipsKpycLBKH4sw2-gW6bhhRmmeaXVCWhdRYDyfymytqV_cpDZf0GVX8ORzGO8Gb8lF3rS1hMuX_a9tO3xr2VaejIN75WGSrmY5sYkk2csQ1AtxzoSFbdYMaDulnOOCtHRfPdIDwxzyiaiNGzFRcZj04yz4LJ16og9I6W6"/><a class="hidden lg:inline-block px-space-sm font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface transition-colors" data-path="sign-in" href="#">Sign In / Sign Up</a></div></div></div></header><main class="w-full pt-20 bg-surface min-h-screen"><div class="flex flex-col w-full">
+<div class="w-full max-w-7xl mx-auto px-margin py-space-xl flex flex-col gap-space-xl">
+<!-- Child Selector, Status & Reassurance Banner -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-space-md bg-surface-container-lowest p-space-lg rounded-xl shadow-sm">
+<div class="flex flex-wrap items-center gap-space-md">
+<!-- Interactive Child Toggle Switcher -->
+<div class="relative inline-block text-left" id="child-switcher-container">
+<button class="flex items-center gap-space-sm bg-surface-container-low hover:bg-surface-container transition-all px-space-md py-space-sm rounded-full shadow-sm text-left" id="childDropdownBtn" type="button">
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container font-headline-sm text-headline-sm shadow-sm">
+              👦
+            </div>
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm text-on-surface flex items-center gap-1">
+                Leo Miller <span class="font-label-sm text-label-sm text-on-surface-variant font-normal">(Grade 4)</span>
+</span>
+<span class="font-label-sm text-label-sm text-secondary flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span> Active View
+              </span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant ml-space-xs text-[20px]">expand_more</span>
+</button>
+<!-- Dropdown Options -->
+<div class="hidden absolute left-0 mt-2 w-64 bg-surface-container-lowest rounded-xl shadow-xl p-space-xs z-30" id="childDropdownMenu">
+<button class="w-full flex items-center gap-space-sm p-space-sm rounded-lg bg-surface-container-low text-on-surface transition-colors" type="button">
+<span class="text-xl">👦</span>
+<div class="text-left">
+<p class="font-label-md text-label-md text-on-surface">Leo Miller</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Grade 4 • Elementary</p>
+</div>
+<span class="material-symbols-outlined text-secondary ml-auto text-[18px]">check_circle</span>
+</button>
+<button class="w-full flex items-center gap-space-sm p-space-sm rounded-lg hover:bg-surface-container text-on-surface transition-colors mt-1" type="button">
+<span class="text-xl">👧</span>
+<div class="text-left">
+<p class="font-label-md text-label-md text-on-surface">Maya Miller</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Grade 2 • Primary</p>
+</div>
+</button>
+<div class="h-px bg-surface-container my-1"></div>
+<button class="w-full flex items-center justify-center gap-1 p-space-sm text-primary font-label-md text-label-md hover:bg-primary-fixed/30 rounded-lg transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">add_circle</span> Add Child
+            </button>
+</div>
+</div>
+<div class="h-8 w-px bg-surface-container hidden sm:block"></div>
+<!-- Last Synced Pill Reassurance -->
+<div class="flex items-center gap-space-xs bg-surface-container px-space-md py-space-xs rounded-full">
+<span class="material-symbols-outlined text-secondary text-[18px]">cloud_done</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Updated 10 minutes ago • <strong class="text-on-surface font-label-sm">All caught up!</strong></span>
+</div>
+</div>
+<!-- Quick Action / Parent Mode Tag -->
+<div class="flex items-center gap-space-sm self-start md:self-auto">
+<span class="inline-flex items-center gap-1.5 px-space-md py-1.5 rounded-full bg-secondary-container/40 text-on-secondary-container font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[16px]">visibility</span> Parent Read-Only Mode
+        </span>
+</div>
+</div>
+<!-- Summary Hero Card: Warm, reassuring game progress -->
+<div class="relative overflow-hidden rounded-xl bg-gradient-to-br from-surface-container-lowest via-surface-container-low to-tertiary-fixed/30 p-space-xl shadow-md">
+<!-- Ambient Decorative background shapes -->
+<div class="absolute -top-16 -right-16 w-64 h-64 bg-tertiary-fixed-dim/20 rounded-full blur-3xl pointer-events-none"></div>
+<div class="absolute -bottom-10 right-1/4 w-48 h-48 bg-primary-fixed/30 rounded-full blur-2xl pointer-events-none"></div>
+<div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-space-xl">
+<!-- Main Explorer Milestones -->
+<div class="flex flex-col gap-space-md max-w-2xl">
+<div class="flex flex-wrap items-center gap-space-sm">
+<span class="inline-flex items-center gap-1.5 px-space-md py-1.5 rounded-full bg-tertiary-fixed text-on-tertiary-container font-label-md text-label-md shadow-sm">
+              Level 5 Curious Explorer 🌟
+            </span>
+<span class="inline-flex items-center gap-1.5 px-space-md py-1.5 rounded-full bg-primary-fixed text-on-primary-fixed-variant font-label-md text-label-md shadow-sm">
+<span class="animate-bounce">🔥</span> 7 Day Streak! <span class="font-normal text-on-surface-variant font-body-sm">(Best: 14 days)</span>
+</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">
+            Leo is cruising through his learning quests this week!
+          </h1>
+<p class="font-body-md text-body-md text-on-surface-variant">
+            Everything is calm and on schedule. 5 of 6 homework quests are submitted, and Leo earned 140 bonus curiosity points since Monday.
+          </p>
+<!-- Interactive Cheer Trigger Strip -->
+<div class="pt-space-xs flex flex-col sm:flex-row sm:items-center gap-space-sm">
+<span class="font-label-md text-label-md text-on-surface flex items-center gap-1">
+              Send Leo a Cheer Badge! 🎉
+            </span>
+<div class="flex flex-wrap gap-space-xs" id="cheer-button-group">
+<button class="px-space-md py-space-xs rounded-full bg-surface-container-lowest hover:bg-primary hover:text-on-primary text-on-surface font-label-sm text-label-sm shadow-sm transition-all transform hover:-translate-y-0.5 active:translate-y-0" onclick="triggerCheer('Proud of you! 💖')">
+                Proud of you! 💖
+              </button>
+<button class="px-space-md py-space-xs rounded-full bg-surface-container-lowest hover:bg-secondary hover:text-on-secondary text-on-surface font-label-sm text-label-sm shadow-sm transition-all transform hover:-translate-y-0.5 active:translate-y-0" onclick="triggerCheer('Keep rocking! 🚀')">
+                Keep rocking! 🚀
+              </button>
+<button class="px-space-md py-space-xs rounded-full bg-surface-container-lowest hover:bg-tertiary hover:text-on-tertiary text-on-surface font-label-sm text-label-sm shadow-sm transition-all transform hover:-translate-y-0.5 active:translate-y-0" onclick="triggerCheer('Almost weekend! 🍕')">
+                Almost weekend! 🍕
+              </button>
+</div>
+<span class="hidden text-secondary font-label-sm text-label-sm animate-pulse ml-2" id="cheer-toast">Sent to Leo's loop! ✨</span>
+</div>
+</div>
+<!-- Quick Glance Telemetry Bento -->
+<div class="flex flex-col sm:flex-row lg:flex-col gap-space-md min-w-[280px]">
+<!-- Homework Quests Meter -->
+<div class="bg-surface-container-lowest/90 backdrop-blur-md p-space-md rounded-xl shadow-sm flex flex-col gap-space-xs">
+<div class="flex justify-between items-baseline">
+<span class="font-label-md text-label-md text-on-surface-variant">Weekly Quests</span>
+<span class="font-headline-sm text-headline-sm text-secondary font-bold">83%</span>
+</div>
+<div class="w-full bg-surface-container h-3 rounded-full overflow-hidden p-0.5">
+<div class="bg-secondary h-full rounded-full transition-all duration-700" style="width: 83%"></div>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">5 of 6 Homework Quests Submitted</span>
+</div>
+<!-- Next Deadline Capsule -->
+<div class="bg-surface-container-lowest/90 backdrop-blur-md p-space-md rounded-xl shadow-sm flex items-start gap-space-sm">
+<div class="p-space-xs rounded-lg bg-tertiary-fixed text-on-tertiary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">timer</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Next Deadline</span>
+<span class="font-label-md text-label-md text-on-surface font-bold">Pizza Fractions</span>
+<span class="font-body-sm text-body-sm text-primary">Due tomorrow at 5:00 PM</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Active Class Progress Section -->
+<div class="flex flex-col gap-space-lg">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-xs">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface">
+            Leo's Active Subjects &amp; Quest Progress 📚
+          </h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+            Detailed view of recent classroom challenges, teacher feedback, and XP streaks.
+          </p>
+</div>
+<div class="flex items-center gap-space-xs">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Term 1 Progress</span>
+<span class="w-2.5 h-2.5 rounded-full bg-secondary"></span>
+</div>
+</div>
+<!-- Classes Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-space-lg">
+<!-- Subject Card 1: Science & Robotics -->
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col justify-between gap-space-lg transition-transform hover:-translate-y-1">
+<div class="flex flex-col gap-space-md">
+<!-- Header -->
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex items-center gap-space-sm">
+<div class="w-12 h-12 rounded-xl bg-secondary-container/50 flex items-center justify-center text-2xl shadow-sm">
+                  🚀
+                </div>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Science &amp; Robotics</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Teacher: Ms. Vance • Lab 3B</p>
+</div>
+</div>
+<span class="px-space-sm py-1 rounded-full bg-secondary-fixed text-on-secondary-fixed-variant font-label-sm text-label-sm">
+                Top Explorer 🏅
+              </span>
+</div>
+<!-- XP Progress Tracker -->
+<div class="flex flex-col gap-space-xs bg-surface-container-low p-space-md rounded-lg">
+<div class="flex justify-between items-center">
+<span class="font-label-md text-label-md text-on-surface">350 XP earned this term</span>
+<span class="font-label-sm text-label-sm text-secondary font-bold">75% of Goal</span>
+</div>
+<div class="w-full bg-surface-container-highest h-3 rounded-full overflow-hidden">
+<div class="h-full bg-secondary rounded-full" style="width: 75%"></div>
+</div>
+<div class="flex justify-between text-on-surface-variant font-body-sm text-body-sm text-[12px]">
+<span>Start: 0 XP</span>
+<span>Next Milestone: 450 XP (Robot Pilot Badge)</span>
+</div>
+</div>
+<!-- Recent Assignments List -->
+<div class="flex flex-col gap-space-sm pt-space-xs">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Recent Quests</span>
+<!-- Quest item 1 -->
+<div class="flex items-center justify-between p-space-sm rounded-lg bg-surface-container-low/60 hover:bg-surface-container-low transition-colors">
+<div class="flex items-center gap-space-sm min-w-0">
+<span class="material-symbols-outlined text-secondary text-[22px]">check_circle</span>
+<div class="truncate">
+<p class="font-label-md text-label-md text-on-surface truncate">Ecosystem Diorama</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Submitted Oct 22 • On time</p>
+</div>
+</div>
+<span class="shrink-0 px-space-sm py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed-variant font-label-sm text-label-sm flex items-center gap-1">
+                  Done ✅
+                </span>
+</div>
+<!-- Quest item 2 -->
+<div class="flex items-center justify-between p-space-sm rounded-lg bg-surface-container-low/60 hover:bg-surface-container-low transition-colors">
+<div class="flex items-center gap-space-sm min-w-0">
+<span class="material-symbols-outlined text-secondary text-[22px]">check_circle</span>
+<div class="truncate">
+<p class="font-label-md text-label-md text-on-surface truncate">Solar System Lab Report</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Submitted Oct 18 • +50 Bonus XP</p>
+</div>
+</div>
+<span class="shrink-0 px-space-sm py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed-variant font-label-sm text-label-sm flex items-center gap-1">
+                  Done ✅
+                </span>
+</div>
+</div>
+</div>
+<!-- Bottom Micro Visual / Feedback -->
+<div class="flex items-center gap-space-sm p-space-sm rounded-lg bg-surface-container-low text-on-surface">
+<span class="text-xl">👩‍🏫</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant italic truncate">
+              "Leo's scale replica of Jupiter was the highlight of Wednesday!"
+            </p>
+</div>
+</div>
+<!-- Subject Card 2: Math Magicians -->
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col justify-between gap-space-lg transition-transform hover:-translate-y-1">
+<div class="flex flex-col gap-space-md">
+<!-- Header -->
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex items-center gap-space-sm">
+<div class="w-12 h-12 rounded-xl bg-tertiary-fixed/60 flex items-center justify-center text-2xl shadow-sm">
+                  📐
+                </div>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Math Magicians</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Teacher: Mr. Harrison • Room 12</p>
+</div>
+</div>
+<span class="px-space-sm py-1 rounded-full bg-tertiary-fixed text-on-tertiary-container font-label-sm text-label-sm">
+                Steady Builder ⚡
+              </span>
+</div>
+<!-- XP Progress Tracker -->
+<div class="flex flex-col gap-space-xs bg-surface-container-low p-space-md rounded-lg">
+<div class="flex justify-between items-center">
+<span class="font-label-md text-label-md text-on-surface">420 XP earned this term</span>
+<span class="font-label-sm text-label-sm text-tertiary font-bold">85% of Goal</span>
+</div>
+<div class="w-full bg-surface-container-highest h-3 rounded-full overflow-hidden">
+<div class="h-full bg-tertiary-container rounded-full" style="width: 85%"></div>
+</div>
+<div class="flex justify-between text-on-surface-variant font-body-sm text-body-sm text-[12px]">
+<span>Start: 0 XP</span>
+<span>Next Milestone: 500 XP (Math Wizard Cape)</span>
+</div>
+</div>
+<!-- Recent Assignments List -->
+<div class="flex flex-col gap-space-sm pt-space-xs">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Active Quests &amp; Reminders</span>
+<!-- Quest item 1: Todo -->
+<div class="flex items-center justify-between p-space-sm rounded-lg bg-surface-container-low/60 hover:bg-surface-container-low transition-colors">
+<div class="flex items-center gap-space-sm min-w-0">
+<span class="material-symbols-outlined text-tertiary text-[22px]">edit_note</span>
+<div class="truncate">
+<p class="font-label-md text-label-md text-on-surface truncate">Fraction Pizza Party</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Due tomorrow at 5:00 PM</p>
+</div>
+</div>
+<span class="shrink-0 px-space-sm py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-container font-label-sm text-label-sm flex items-center gap-1">
+                  Todo ✏️
+                </span>
+</div>
+<!-- Quest item 2: Todo -->
+<div class="flex items-center justify-between p-space-sm rounded-lg bg-surface-container-low/60 hover:bg-surface-container-low transition-colors">
+<div class="flex items-center gap-space-sm min-w-0">
+<span class="material-symbols-outlined text-tertiary text-[22px]">pending_actions</span>
+<div class="truncate">
+<p class="font-label-md text-label-md text-on-surface truncate">Decimal Maze Challenge</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Due today 5:00 PM</p>
+</div>
+</div>
+<span class="shrink-0 px-space-sm py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-container font-label-sm text-label-sm flex items-center gap-1">
+                  Todo ✏️
+                </span>
+</div>
+<!-- Quest item 3: Late Encouragement -->
+<div class="flex items-center justify-between p-space-sm rounded-lg bg-error-container/40 hover:bg-error-container/60 transition-colors">
+<div class="flex items-center gap-space-sm min-w-0">
+<span class="material-symbols-outlined text-error text-[22px]">warning</span>
+<div class="truncate">
+<p class="font-label-md text-label-md text-on-surface truncate">Mixed Numbers Safari</p>
+<p class="font-body-sm text-body-sm text-error">Due yesterday • Needs parent nudge</p>
+</div>
+</div>
+<span class="shrink-0 px-space-sm py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed-variant font-label-sm text-label-sm flex items-center gap-1">
+                  Late ⚠️
+                </span>
+</div>
+</div>
+</div>
+<!-- Gentle nudge action for late quest -->
+<div class="p-space-sm rounded-lg bg-surface-container-low flex items-center justify-between">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Offer a reminder during dinner?</span>
+<button class="font-label-sm text-label-sm text-primary hover:underline flex items-center gap-1">
+              Add Dinner Nudge <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Subject Card 3: Creative Writing -->
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col justify-between gap-space-lg transition-transform hover:-translate-y-1">
+<div class="flex flex-col gap-space-md">
+<!-- Header -->
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex items-center gap-space-sm">
+<div class="w-12 h-12 rounded-xl bg-primary-fixed flex items-center justify-center text-2xl shadow-sm">
+                  📖
+                </div>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Creative Writing</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Teacher: Mrs. Gable • Studio 4</p>
+</div>
+</div>
+<span class="px-space-sm py-1 rounded-full bg-secondary-fixed text-on-secondary-fixed-variant font-label-sm text-label-sm">
+                100% Up to Date ⭐
+              </span>
+</div>
+<!-- XP Progress Tracker -->
+<div class="flex flex-col gap-space-xs bg-surface-container-low p-space-md rounded-lg">
+<div class="flex justify-between items-center">
+<span class="font-label-md text-label-md text-on-surface">290 XP earned</span>
+<span class="font-label-sm text-label-sm text-secondary font-bold">100% of Module Goal</span>
+</div>
+<div class="w-full bg-surface-container-highest h-3 rounded-full overflow-hidden">
+<div class="h-full bg-secondary rounded-full" style="width: 100%"></div>
+</div>
+<div class="flex justify-between text-on-surface-variant font-body-sm text-body-sm text-[12px]">
+<span>All assignments submitted!</span>
+<span>Next Module: Nov 1</span>
+</div>
+</div>
+<!-- Celebratory State -->
+<div class="py-space-md px-space-lg bg-surface-container-low rounded-xl flex items-center gap-space-md">
+<div class="w-12 h-12 rounded-full bg-tertiary-fixed flex items-center justify-center text-2xl shadow-sm shrink-0">
+                🎉
+              </div>
+<div>
+<p class="font-headline-sm text-headline-sm text-on-surface">All quests completed!</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Leo finished his "Mythical Beast Tale" 2 days early. No weekend homework for writing!</p>
+</div>
+</div>
+</div>
+<!-- Bottom Footer -->
+<div class="flex items-center justify-between text-on-surface-variant font-body-sm text-body-sm">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[18px] text-secondary">verified</span> Mrs. Gable left a 5-star sticker</span>
+<button class="font-label-sm text-label-sm text-secondary hover:underline">Read Story Draft</button>
+</div>
+</div>
+<!-- Card 4: Warm Empty State Widget for Inactive Subject -->
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col justify-between gap-space-lg border-2 border-dashed border-surface-container-high">
+<div class="flex flex-col gap-space-md">
+<!-- Header -->
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<div class="w-12 h-12 rounded-xl bg-tertiary-fixed-dim/40 flex items-center justify-center text-2xl">
+                  🎨
+                </div>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Art &amp; Digital Media</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Semester B • Starts mid-November</p>
+</div>
+</div>
+<span class="px-space-sm py-1 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm">
+                Upcoming
+              </span>
+</div>
+<!-- Friendly graphic & copy -->
+<div class="flex flex-col items-center justify-center text-center p-space-lg my-auto gap-space-sm">
+<!-- Custom playful inline SVG of a smiling paintbrush -->
+<div class="w-20 h-20 text-tertiary flex items-center justify-center">
+<svg class="w-20 h-20 fill-none stroke-current" stroke-linecap="round" stroke-linejoin="round" stroke-width="4" viewbox="0 0 100 100">
+<!-- Brush Handle -->
+<path class="stroke-primary" d="M60 25 L80 10 C83 7 88 12 85 15 L70 35" stroke-width="6"></path>
+<!-- Metal Ferrule -->
+<path class="stroke-outline" d="M50 35 L68 47"></path>
+<rect class="fill-surface-container-highest stroke-outline" height="14" rx="4" stroke-width="3" transform="rotate(35 58 39)" width="26" x="45" y="32"></rect>
+<!-- Bristles -->
+<path class="fill-tertiary-fixed stroke-tertiary" d="M43 45 C35 55 25 70 20 82 C28 85 45 80 55 60 Z" stroke-width="3"></path>
+<!-- Smiling Face on Brush -->
+<circle class="fill-on-tertiary-container stroke-none" cx="34" cy="62" r="2.5"></circle>
+<circle class="fill-on-tertiary-container stroke-none" cx="44" cy="68" r="2.5"></circle>
+<path class="stroke-on-tertiary-container fill-none" d="M36 71 Q40 76 45 73" stroke-width="2"></path>
+<!-- Sparkles -->
+<path class="fill-secondary stroke-none" d="M78 50 L80 55 L85 57 L80 59 L78 64 L76 59 L71 57 L76 55 Z"></path>
+<path class="fill-primary-container stroke-none" d="M22 25 L24 28 L27 29 L24 30 L22 33 L20 30 L17 29 L20 28 Z"></path>
+</svg>
+</div>
+<div class="max-w-xs flex flex-col gap-1">
+<p class="font-headline-sm text-headline-sm text-on-surface">Creative Break Time!</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                  No homework yet — the adventure starts soon! Enjoy the creative break! 🌈
+                </p>
+</div>
+</div>
+</div>
+<!-- Bottom subtle note -->
+<div class="bg-surface-container-low p-space-sm rounded-lg flex items-center justify-between text-on-surface-variant font-body-sm text-body-sm">
+<span>Supplies checklist will arrive in your inbox</span>
+<span class="material-symbols-outlined text-[18px]">palette</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Parent Reassurance & Insights Footer Strip -->
+<div class="bg-surface-container-low rounded-xl p-space-lg flex flex-col md:flex-row items-center justify-between gap-space-md shadow-sm">
+<div class="flex items-center gap-space-md">
+<div class="w-12 h-12 rounded-full bg-secondary text-on-secondary flex items-center justify-center shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-[24px]">psychology</span>
+</div>
+<div>
+<h4 class="font-headline-sm text-headline-sm text-on-surface">Pedagogical Snapshot for Parents</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+            Leo's engagement pattern indicates high confidence in STEM quests and steady mastery in language arts.
+          </p>
+</div>
+</div>
+<div class="flex items-center gap-space-sm shrink-0">
+<button class="px-space-md py-space-xs rounded-full bg-surface-container-lowest hover:bg-surface-container text-on-surface font-label-md text-label-md transition-colors shadow-sm">
+          Download Term Digest 📄
+        </button>
+<button class="px-space-md py-space-xs rounded-full bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md shadow-sm transition-transform active:scale-95">
+          Message Teachers 💬
+        </button>
+</div>
+</div>
+</div>
+</div>
+<script>
+  // Simple interactive micro-behaviors for Child Switcher and Cheer Badges
+  document.addEventListener('DOMContentLoaded', function () {
+    const dropdownBtn = document.getElementById('childDropdownBtn');
+    const dropdownMenu = document.getElementById('childDropdownMenu');
+
+    if (dropdownBtn && dropdownMenu) {
+      dropdownBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        dropdownMenu.classList.toggle('hidden');
+      });
+
+      document.addEventListener('click', function () {
+        if (!dropdownMenu.classList.contains('hidden')) {
+          dropdownMenu.classList.add('hidden');
+        }
+      });
+    }
+  });
+
+  function triggerCheer(cheerText) {
+    const toast = document.getElementById('cheer-toast');
+    if (toast) {
+      toast.innerText = `Sent: "${cheerText}" ✨`;
+      toast.classList.remove('hidden');
+      setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 3000);
+    }
+  }
+</script></main><footer class="w-full bg-surface-container-low shadow-[0_-2px_12px_rgba(0,0,0,0.02)] mt-space-2xl"><div class="w-full px-margin py-space-xl flex flex-col md:flex-row items-center justify-between gap-space-md"><div class="flex items-center gap-space-sm"><img alt="LearnLoop Logo" class="h-6 w-auto object-contain opacity-80" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDCktVszlL2CG3Vb8biaZKRWeadQHQLh_a8O-UKZLnaX4VFO4mUBdSZeqLVxqxaoJLgQmcwIloqRpq2Q41nnnHIZnIKOgPqHQaZWKWh1mfSaGiwMTGpsbYQKwfGHPrL6V7CnZxRMUBf7KT2_8Alm9jIcxFpS4iDq_Mm0YvXsGUB2fbUq9NaaseWYdM-M_J78uiA0XDA7tcyNQ2mIil7tL40JVwh4W2TelUXDi9BzzZi2Y53hEULsEG0"/><span class="font-headline-sm text-headline-sm text-on-surface">LearnLoop</span><span class="font-body-sm text-body-sm text-on-surface-variant ml-space-xs">© 2025 Playful Learning Platform</span></div><div class="flex items-center gap-space-md"><a class="font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface transition-colors" data-path="home" href="#">Privacy Policy</a><a class="font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface transition-colors" data-path="home" href="#">Terms of Service</a><a class="font-label-sm text-label-sm text-primary hover:text-on-surface transition-colors" data-path="book-trial" href="#">Help Center</a></div></div></footer></body></html>
