@@ -92,7 +92,7 @@ export default function ParentDashboard() {
           </div>
           <button
             onClick={() => void auth.signoutRedirect()}
-            className="relative z-10 self-start md:self-center px-4 py-2 rounded-full border-2 border-border-soft bg-warm text-sm font-display font-bold hover:bg-white transition-colors"
+            className="relative z-10 self-start md:self-center px-4 py-2.5 min-h-[40px] rounded-full border-2 border-border-soft bg-warm text-sm font-display font-bold hover:bg-white transition-colors"
           >
             Sign out
           </button>
@@ -108,7 +108,7 @@ export default function ParentDashboard() {
               onChange={(e) => setLinkCode(e.target.value.toUpperCase())}
               maxLength={8}
               placeholder="CODE8"
-              className="input-warm rounded-xl px-4 py-2.5 font-mono w-40 tracking-widest"
+              className="input-warm rounded-xl px-4 py-2.5 font-mono flex-1 min-w-0 tracking-widest"
             />
             <button onClick={link} disabled={!linkCode}
               className="btn-push-teal h-12 px-6 rounded-full bg-teal text-white font-display font-bold disabled:opacity-40 disabled:shadow-none">
@@ -131,7 +131,7 @@ export default function ParentDashboard() {
                 <button
                   key={c.child_id}
                   onClick={() => setSelected(c)}
-                  className={`px-4 py-2 rounded-full border-2 font-display text-sm font-bold transition-all ${
+                  className={`px-4 py-2.5 min-h-[40px] rounded-full border-2 font-display text-sm font-bold transition-all ${
                     selected?.child_id === c.child_id
                       ? 'border-coral bg-coral/10 text-coral-deep shadow-sm'
                       : 'border-border-soft bg-white text-muted hover:text-ink'

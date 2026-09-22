@@ -150,7 +150,7 @@ export default function StudentDashboard() {
               onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
               maxLength={6}
               placeholder="CODE6"
-              className="input-warm rounded-xl px-4 py-2.5 font-mono w-36 tracking-widest"
+              className="input-warm rounded-xl px-4 py-2.5 font-mono flex-1 min-w-0 tracking-widest"
             />
             <button onClick={join} disabled={!joinCode}
               className="btn-push-teal h-12 px-6 rounded-full bg-teal text-white font-display font-bold disabled:opacity-40 disabled:shadow-none">
@@ -178,7 +178,7 @@ export default function StudentDashboard() {
         <div className="flex justify-end">
           <button
             onClick={() => void auth.signoutRedirect()}
-            className="px-4 py-2 rounded-full border-2 border-border-soft bg-warm text-sm font-display font-bold hover:bg-white transition-colors"
+            className="px-4 py-2.5 min-h-[40px] rounded-full border-2 border-border-soft bg-warm text-sm font-display font-bold hover:bg-white transition-colors"
           >
             Sign out
           </button>
@@ -201,8 +201,8 @@ export default function StudentDashboard() {
 
       {/* Celebration modal */}
       {celebrate && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ink/50 backdrop-blur-md">
-          <div className="relative w-full max-w-md bg-white rounded-3xl p-8 text-center shadow-2xl flex flex-col items-center">
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-ink/50 backdrop-blur-md">
+          <div className="relative w-full max-w-md bg-white rounded-t-3xl sm:rounded-3xl p-8 text-center shadow-2xl flex flex-col items-center">
             <div className="relative w-28 h-28 mb-4 flex items-center justify-center">
               <div className="absolute inset-0 bg-sunny rounded-full animate-ping opacity-30" />
               <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-sunny via-teal to-coral/60 flex items-center justify-center text-5xl shadow-lg">
@@ -320,8 +320,8 @@ function QuestModal({ assignment, token, onClose, onSubmitted }: {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ink/40 backdrop-blur-sm">
-      <div className="relative w-full max-w-2xl bg-white rounded-3xl p-6 sm:p-8 shadow-2xl max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-ink/40 backdrop-blur-sm">
+      <div className="relative w-full max-w-2xl bg-white rounded-t-3xl sm:rounded-3xl p-6 sm:p-8 shadow-2xl max-h-[92vh] overflow-y-auto">
         <button
           aria-label="Close"
           onClick={onClose}
@@ -388,7 +388,7 @@ function LinkCodeSection({ token }: { token: string }) {
         <h2 className="font-display text-xl font-bold">Parent Connection Code 🏡</h2>
         <p className="text-sm text-muted">Share this code with your parents so they can follow your progress.</p>
       </div>
-      <div className="flex gap-2 items-center">
+      <div className="flex flex-wrap gap-2 items-center">
         <span className="font-mono bg-warm border border-border-soft px-4 py-2.5 rounded-xl tracking-widest">{code}</span>
         <button
           onClick={async () => setCode((await apiFetch('/me/link-code', token, { method: 'POST' })).code)}
