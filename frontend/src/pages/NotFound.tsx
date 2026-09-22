@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 /** 404 page (issue #53). Fun but calm, per the Playful Warmth design tone. */
 export default function NotFound() {
   return (
-    <main className="min-h-screen bg-cream font-body text-ink flex items-center justify-center p-4">
+    <main className="min-h-screen bg-cream font-body text-ink flex items-center justify-center p-4 relative overflow-hidden">
       <div className="relative overflow-hidden w-full max-w-md bg-white rounded-3xl p-8 md:p-10 shadow-sm border border-border-soft text-center">
         <div className="absolute -top-12 -right-12 w-40 h-40 bg-teal/20 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute -bottom-14 -left-12 w-44 h-44 bg-coral/15 rounded-full blur-3xl pointer-events-none" />
