@@ -92,19 +92,38 @@
                 </div>
             </div>
         </form>
-    <#-- Role prefill (issue #54): the SPA passes ?role=student|parent|teacher; keep it
-         in a hidden field so the user-attribute role mapper puts it in the token. -->
+    <#-- Role selection (issue #54): Keycloak does not forward custom query params
+         into the registration page, so the picked role cannot be read here. Show a
+         small pill selector instead (default: student) that keeps a hidden role
+         field in sync; the role-attribute mapper carries it into the token. -->
+    <div id="ll-role-picker" style="display:flex;gap:.5rem;justify-content:center;margin:.25rem 0 1rem;">
+      <button type="button" data-role="student" class="ll-role is-active" style="all:unset;cursor:pointer;padding:.4rem 1rem;border-radius:9999px;font-weight:700;font-size:.875rem;background:#fff;color:#f26b5e;box-shadow:0 1px 3px rgba(0,0,0,.12);">🎒 Student</button>
+      <button type="button" data-role="parent" class="ll-role" style="all:unset;cursor:pointer;padding:.4rem 1rem;border-radius:9999px;font-weight:700;font-size:.875rem;background:transparent;color:#6b6257;">🏡 Parent</button>
+      <button type="button" data-role="teacher" class="ll-role" style="all:unset;cursor:pointer;padding:.4rem 1rem;border-radius:9999px;font-weight:700;font-size:.875rem;background:transparent;color:#6b6257;">📚 Teacher</button>
+    </div>
     <script>
       (function () {
-        var role = new URLSearchParams(window.location.search).get('role');
-        if (!['student', 'parent', 'teacher'].includes(role)) return;
         var form = document.getElementById('kc-register-form');
-        if (!form || form.querySelector('input[name="role"]')) return;
+        if (!form) return;
         var input = document.createElement('input');
         input.type = 'hidden';
         input.name = 'role';
-        input.value = role;
+        input.value = 'student';
         form.appendChild(input);
+        var pills = document.querySelectorAll('#ll-role-picker .ll-role');
+        pills.forEach(function (pill) {
+          pill.addEventListener('click', function () {
+            pills.forEach(function (p) {
+              p.classList.remove('is-active');
+              p.style.background = 'transparent';
+              p.style.color = '#6b6257';
+            });
+            pill.classList.add('is-active');
+            pill.style.background = '#fff';
+            pill.style.color = '#f26b5e';
+            input.value = pill.getAttribute('data-role');
+          });
+        });
       })();
     </script>
 
