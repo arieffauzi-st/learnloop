@@ -75,7 +75,7 @@ export default function LoginPage() {
           <button
             type="button"
             onClick={() => setMode('signin')}
-            className={`flex-1 py-2.5 px-4 min-h-[40px] rounded-full font-display text-sm font-bold text-center transition-all ${
+            className={`flex-1 py-2.5 px-2 sm:px-4 min-h-[40px] rounded-full font-display text-xs sm:text-sm font-bold text-center whitespace-nowrap transition-all ${
               mode === 'signin' ? 'bg-white text-coral shadow-sm' : 'text-muted hover:text-ink'
             }`}
           >
@@ -84,7 +84,7 @@ export default function LoginPage() {
           <button
             type="button"
             onClick={() => setMode('signup')}
-            className={`flex-1 py-2.5 px-4 min-h-[40px] rounded-full font-display text-sm font-bold text-center transition-all ${
+            className={`flex-1 py-2.5 px-2 sm:px-4 min-h-[40px] rounded-full font-display text-xs sm:text-sm font-bold text-center whitespace-nowrap transition-all ${
               mode === 'signup' ? 'bg-white text-coral shadow-sm' : 'text-muted hover:text-ink'
             }`}
           >
@@ -112,23 +112,24 @@ export default function LoginPage() {
             </p>
           </div>
 
-          {/* Role selector */}
-          <div className="flex items-center gap-2 mb-6 bg-warm p-1.5 rounded-2xl border border-border-soft">
-            <span className="text-xs font-semibold text-muted pl-2">I am a:</span>
-            <div className="flex-1 flex gap-1.5">
+          {/* Role selector — stacks vertically on mobile so labels never wrap */}
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-6 bg-warm p-1.5 rounded-2xl border border-border-soft">
+            <span className="text-xs font-semibold text-muted pl-2 sm:pl-2">I am a:</span>
+            <div className="grid grid-cols-3 gap-1.5">
               {ROLES.map((r) => (
                 <button
                   key={r.role}
                   type="button"
                   onClick={() => setPicked(r.role)}
                   aria-pressed={picked === r.role}
-                  className={`flex-1 py-2.5 px-2 min-h-[40px] rounded-xl font-display text-sm font-bold flex items-center justify-center gap-1 transition-all ${
+                  className={`py-2.5 px-1 min-h-[44px] rounded-xl font-display text-xs sm:text-sm font-bold flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1 transition-all ${
                     picked === r.role
                       ? 'bg-white text-coral shadow-sm'
                       : 'text-muted hover:bg-white/60'
                   }`}
                 >
-                  <span>{r.emoji}</span> {r.label}
+                  <span aria-hidden="true">{r.emoji}</span>
+                  <span>{r.label}</span>
                 </button>
               ))}
             </div>
