@@ -4,6 +4,7 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { useAuth } from 'react-oidc-context'
 import './index.css'
 import { AuthProviderWrapper, RequireRole } from './auth/AuthProvider'
+import LandingPage from './pages/LandingPage'
 import LoginPage from './pages/LoginPage'
 import Dashboard from './pages/Dashboard'
 import ParentDashboard from './pages/ParentDashboard'
@@ -11,12 +12,17 @@ import StudentDashboard from './pages/StudentDashboard'
 import TeacherDashboard from './pages/TeacherDashboard'
 import NotFound from './pages/NotFound'
 
-// "/" langsung mengarah ke tujuan yang berguna: sudah login -> dashboard,
-// belum -> halaman login (landing page tersedia di /welcome? tidak - dihapus dari rute default).
+// "/": anonymous -> public landing page; authenticated -> role dashboard.
 function RootRedirect() {
   const auth = useAuth()
   if (auth.isLoading) return null
-  return auth.isAuthenticated ? <Navigate to="/dashboard" replace /> : <Navigate to="/login" replace />
+  if (!auth.isAuthenticated) return <LandingPage />
+  const claims = auth.user?.profile as Record<string, unknown> | undefined
+  const role = claims?.role as string | undefined
+  if (role === 'teacher') return <Navigate to="/teacher" replace />
+  if (role === 'parent') return <Navigate to="/parent" replace />
+  if (role === 'student') return <Navigate to="/student" replace />
+  return <Navigate to="/dashboard" replace />
 }
 
 createRoot(document.getElementById('root')!).render(

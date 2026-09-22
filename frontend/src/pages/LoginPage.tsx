@@ -1,5 +1,5 @@
 import { useAuth } from 'react-oidc-context'
-import { Navigate } from 'react-router-dom'
+import { Navigate, useSearchParams } from 'react-router-dom'
 import { useState } from 'react'
 
 const ROLES = [
@@ -13,7 +13,14 @@ const ROLES = [
  *  registration role for the signup flow. */
 export default function LoginPage() {
   const auth = useAuth()
-  const [picked, setPicked] = useState<string | null>(null)
+  const [searchParams] = useSearchParams()
+  // Pre-select the role when arriving from the landing page demo buttons
+  // (/login?role=student|teacher|parent). No auto-login: Keycloak credentials
+  // are still required.
+  const initialRole = searchParams.get('role')
+  const [picked, setPicked] = useState<string | null>(
+    ROLES.some((r) => r.role === initialRole) ? initialRole : null,
+  )
   const [mode, setMode] = useState<'signin' | 'signup'>('signin')
 
   if (auth.isAuthenticated) return <Navigate to="/dashboard" replace />
