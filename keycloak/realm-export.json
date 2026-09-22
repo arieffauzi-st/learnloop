@@ -95,7 +95,8 @@
           "value": "demo-password",
           "temporary": false
         }
-      ]
+      ],
+      "id": "04a400af-c0e3-42ac-85ce-68885f640efa"
     },
     {
       "username": "student-demo",
@@ -117,7 +118,8 @@
           "value": "demo-password",
           "temporary": false
         }
-      ]
+      ],
+      "id": "16072590-af3b-413a-9b3c-51568b36b659"
     },
     {
       "username": "parent-demo",
@@ -139,9 +141,9 @@
           "value": "demo-password",
           "temporary": false
         }
-      ]
+      ],
+      "id": "e7b7a7ac-7b80-48ac-8fe8-c496ba9c24eb"
     }
   ],
-  "loginTheme": "learnloop",
-  "unmanagedAttributes": "ENABLED"
+  "loginTheme": "learnloop"
 }
