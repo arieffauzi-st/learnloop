@@ -9,8 +9,6 @@ import random
 import string
 from datetime import UTC, datetime, timedelta
 
-from sqlalchemy import func, select
-
 from app.db import _SessionLocal
 from app.models import (
     Assignment,
@@ -38,11 +36,6 @@ def seed_demo() -> dict:
     db = _SessionLocal()
     now = datetime.now(UTC).replace(tzinfo=None)
     try:
-        if db.scalar(select(func.count()).select_from(Class_)) and db.scalar(
-            select(func.count()).select_from(User).where(User.name == "teacher-demo")
-        ):
-            return {"skipped": "demo data already present"}
-
         users: dict[str, User] = {}
         for name, email, role in DEMO_USERS:
             u = db.query(User).filter(User.name == name).first()
@@ -66,7 +59,9 @@ def seed_demo() -> dict:
             db.add(c2)
         db.flush()
 
-        db.add(Enrollment(class_id=c1.id, student_id=student.id))
+        if not db.query(Enrollment).filter(Enrollment.class_id == c1.id,
+                                           Enrollment.student_id == student.id).first():
+            db.add(Enrollment(class_id=c1.id, student_id=student.id))
         db.flush()
 
         def assignment(cls, title, instructions, days):
@@ -93,7 +88,7 @@ def seed_demo() -> dict:
                                is_late=late, version=1)
                 db.add(s)
 
-        a4 = db.query(Assignment).filter(Assignment.title == "Shape Scavenger Hunt").first()
+        a4 = db.query(Assignment).filter(Assignment.class_id == c1.id, Assignment.title == "Shape Scavenger Hunt").first()
         submission(a4, "Found triangles in the roof window, pizza slice, and 3 books!", 4, False)
 
         lc = db.query(LinkCode).filter(LinkCode.student_id == student.id).first()
