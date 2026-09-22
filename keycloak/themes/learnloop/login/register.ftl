@@ -92,6 +92,22 @@
                 </div>
             </div>
         </form>
+    <#-- Role prefill (issue #54): the SPA passes ?role=student|parent|teacher; keep it
+         in a hidden field so the user-attribute role mapper puts it in the token. -->
+    <script>
+      (function () {
+        var role = new URLSearchParams(window.location.search).get('role');
+        if (!['student', 'parent', 'teacher'].includes(role)) return;
+        var form = document.getElementById('kc-register-form');
+        if (!form || form.querySelector('input[name="role"]')) return;
+        var input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'role';
+        input.value = role;
+        form.appendChild(input);
+      })();
+    </script>
+
         <script type="module" src="${url.resourcesPath}/js/passwordVisibility.js"></script>
     </#if>
 </@layout.registrationLayout>

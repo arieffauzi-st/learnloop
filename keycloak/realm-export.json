@@ -142,5 +142,6 @@
       ]
     }
   ],
-  "loginTheme": "learnloop"
+  "loginTheme": "learnloop",
+  "unmanagedAttributes": "ENABLED"
 }
