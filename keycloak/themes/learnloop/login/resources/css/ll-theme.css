@@ -71,15 +71,44 @@ body::after {
 @keyframes ll-bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
 .ll-subtitle { margin: 0; color: var(--ll-muted); font-size: 0.95rem; }
 
-/* White rounded card */
-#kc-content, #kc-content-wrapper { width: 100%; max-width: 28rem; }
+/* ── Layout: card centered vertically & horizontally, all screens ── */
+html, body { height: 100%; }
+.login-pf body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  min-height: 100svh;
+  padding: 2.5rem 1rem;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+/* Keycloak wraps everything in .login-pf-page — make it the centered column */
+.login-pf-page {
+  width: 100%;
+  max-width: 30rem;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+#kc-content-wrapper, #kc-form, #kc-form-wrapper, #kc-registration-container, #kc-info-wrapper {
+  width: 100%;
+}
 #kc-content {
   background: #ffffff;
   border-radius: var(--ll-radius);
   box-shadow: 0 12px 32px rgba(58, 46, 57, 0.12);
   padding: 2rem;
   border: 1px solid rgba(224, 191, 189, 0.4);
+  margin: 0 !important;
+  text-align: left;
 }
+#kc-header { width: 100%; }
+/* neutralize Keycloak's own split/grid wrappers if present */
+.login-pf .pf-v5-l-split, .login-pf .pf-v5-l-split__item { width: 100%; max-width: none; padding: 0; }
 
 #kc-form { width: 100%; }
 .ll-form, .ll-form-group { margin-bottom: 1.1rem; }
@@ -183,15 +212,13 @@ body::after {
 
 /* Tablet & phone */
 @media (max-width: 768px) {
-  /* center the card, give it breathing room */
+  .login-pf body { padding: 1.25rem 0.75rem; }
+
   #kc-content {
-    max-width: 100%;
     padding: 1.4rem 1.1rem;
     border-radius: 14px;
-    margin: 0 1rem;
   }
 
-  #kc-header { padding: 0 1rem; }
   .ll-brand-name { font-size: 1.4rem; }
   .ll-logo { width: 2.6rem; height: 2.6rem; border-radius: 11px; }
   .ll-title { font-size: 1.3rem; }
@@ -221,11 +248,6 @@ body::after {
 
 /* Very small phones */
 @media (max-width: 360px) {
-  #kc-content { padding: 1.1rem 0.9rem; margin: 0 0.6rem; }
+  #kc-content { padding: 1.1rem 0.9rem; }
   .ll-title { font-size: 1.15rem; }
-}
-
-/* Desktop: keep the card visually centered & roomy */
-@media (min-width: 769px) {
-  #kc-content { margin: 0 auto; }
 }
