@@ -54,10 +54,14 @@ def _reconcile_demo_users(db) -> None:
                        {"k": keep, "s": stale})
             db.execute(_text("UPDATE parent_links SET parent_id = :k WHERE parent_id = :s"),
                        {"k": keep, "s": stale})
-            db.execute(_text("UPDATE parent_links SET student_id = :k WHERE student_id = :s"),
-                       {"k": keep, "s": stale})
-            db.execute(_text("UPDATE link_codes SET student_id = :k WHERE student_id = :s"),
-                       {"k": keep, "s": stale})
+            # unique-constrained tables: drop stale rows that would collide
+            # with rows the kept profile already has, then move the rest
+            db.execute(_text(
+                "DELETE FROM parent_links WHERE student_id = :s AND NOT EXISTS "
+                "(SELECT 1 FROM parent_links p2 WHERE p2.parent_id = :k "
+                "AND p2.student_id = parent_links.student_id)"), {"k": keep, "s": stale})
+            db.execute(_text("DELETE FROM parent_links WHERE parent_id = :s"), {"s": stale})
+            db.execute(_text("DELETE FROM link_codes WHERE student_id = :s"), {"s": stale})
             db.execute(_text("DELETE FROM users WHERE id = :s"), {"s": stale})
         # collapse duplicates the merge may create
         db.execute(_text(
