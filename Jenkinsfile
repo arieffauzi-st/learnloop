@@ -60,6 +60,8 @@ cd "$DEPLOY_DIR"
 # the host - it silently creates an empty dir and the realm never imports.
 docker volume create learnloop-kc-import >/dev/null
 tar -C keycloak -cf - . | docker run --rm -i -v learnloop-kc-import:/tgt alpine sh -c 'rm -rf /tgt/* && tar -C /tgt -xf -'
+docker volume create learnloop-kc-themes >/dev/null
+tar -C keycloak/themes -cf - . | docker run --rm -i -v learnloop-kc-themes:/tgt alpine sh -c 'rm -rf /tgt/* && tar -C /tgt -xf -'
 
 printf 'KC_ADMIN_PASSWORD=%s\\n' "$KC_PW" > .env
 trap 'rm -f .env' EXIT
