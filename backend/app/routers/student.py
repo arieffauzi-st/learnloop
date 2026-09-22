@@ -72,8 +72,18 @@ def join_class(payload: JoinRequest, student: User = Depends(student_required),
 @router.post("/assignments/{assignment_id}/submit", status_code=201)
 def submit(assignment_id: int, payload: SubmitRequest,
            student: User = Depends(student_required), db: Session = Depends(get_db)):
-    """S3: enrolled students only; server stamps time; is_late computed."""
+    """S3: enrolled students only; server stamps time; is_late computed.
+
+    Latest-wins: if a submission already exists (e.g. the client always POSTs),
+    update it instead of raising a UNIQUE-constraint 500 (QA round 2 bug)."""
     a = _enrolled_assignment(db, assignment_id, student.id)
+    sub = db.query(Submission).filter(
+        Submission.assignment_id == assignment_id, Submission.student_id == student.id
+    ).first()
+    if sub is not None:
+        if payload.expected_version is not None and payload.expected_version != sub.version:
+            raise HTTPException(status_code=409, detail="version conflict")
+        return _write_submission(db, a, student.id, payload, existing=sub)
     return _write_submission(db, a, student.id, payload)
 
 
