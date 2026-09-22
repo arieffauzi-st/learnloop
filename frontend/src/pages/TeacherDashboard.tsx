@@ -43,7 +43,7 @@ export default function TeacherDashboard() {
   }
 
   return (
-    <main className="min-h-screen bg-cream font-body text-ink">
+    <main className="min-h-screen bg-cream font-body text-ink relative overflow-hidden">
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
         {/* Header banner */}
         <section className="relative overflow-hidden bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-border-soft flex flex-col md:flex-row md:items-center justify-between gap-4">

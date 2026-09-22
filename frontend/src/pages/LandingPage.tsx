@@ -29,7 +29,7 @@ const FEATURES = [
  *  the root route redirects them to their role dashboard. */
 export default function LandingPage() {
   return (
-    <main className="min-h-screen bg-cream font-body text-ink overflow-hidden">
+    <main className="min-h-screen bg-cream font-body text-ink overflow-hidden relative">
       {/* Ambient decorative glows */}
       <div className="absolute -top-24 -left-20 w-80 h-80 rounded-full bg-teal/20 blur-3xl pointer-events-none" />
       <div className="absolute top-1/3 -right-24 w-96 h-96 rounded-full bg-coral/30 blur-3xl pointer-events-none" />
