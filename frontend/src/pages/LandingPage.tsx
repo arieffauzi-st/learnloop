@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { PaperBuddySvg, RocketBuddySvg, StarBuddySvg } from '../components/characters/BuddySvgs'
 
 /** 3D hero scene is lazy: code-split so first paint is never blocked, and the
@@ -42,6 +42,7 @@ const FEATURES = [
  *  landing mockup (design/stitch/landing). Signed-in users never see this —
  *  the root route redirects them to their role dashboard. */
 export default function LandingPage() {
+  const navigate = useNavigate()
   return (
     <main className="min-h-screen bg-cream font-body text-ink overflow-hidden relative">
       {/* Ambient decorative glows (mock: layered overlapping blobs) */}
@@ -191,7 +192,7 @@ export default function LandingPage() {
           {/* Lazy 3D hero scene (static SVG buddy until WebGL loads / if absent) */}
           <div className="relative w-full h-[260px] md:h-[400px] rounded-3xl bg-white/70 border border-border-soft shadow-lift overflow-hidden">
             <Suspense fallback={<HeroSceneFallback />}>
-              <HeroScene />
+              <HeroScene onNavigate={navigate} />
             </Suspense>
           </div>
         </section>
