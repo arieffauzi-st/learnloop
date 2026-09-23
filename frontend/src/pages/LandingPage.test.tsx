@@ -14,6 +14,6 @@ describe('LandingPage', () => {
         <LandingPage />
       </MemoryRouter>,
     )
-    expect(screen.getByText('Paper War!')).toBeDefined()
+    expect(screen.getByText((_, el) => el?.textContent === 'Fold it, hide your army, and strike — play Paper War and more, right in your browser.')).toBeDefined()
   })
 })
