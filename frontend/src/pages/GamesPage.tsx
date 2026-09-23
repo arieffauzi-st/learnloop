@@ -17,7 +17,7 @@ const GAMES: GameCard[] = [
     id: 'perang-kertas',
     emoji: '📄⚔️',
     title: 'Perang Kertas',
-    tagline: 'Lipat kertas, sembunyikan pasukanmu, dan kena-kan stickman lawan! Main bergantian di satu layar.',
+    tagline: 'Fold the paper, hide your soldiers, and hit the opponent stickmen! Take turns on one screen.',
     gradient: 'from-coral/80 via-sunny/70 to-teal/70',
   },
   {
@@ -71,13 +71,13 @@ export default function GamesPage() {
             <h1 className="font-display text-3xl md:text-4xl font-bold tracking-tight">
               Game Zone <span className="inline-block">🎮</span>
             </h1>
-            <p className="text-muted mt-1">Main sambil belajar — pilih game favoritmu!</p>
+            <p className="text-muted mt-1">Play while you learn — pick your favorite game!</p>
           </div>
           <Link
             to="/"
             className="btn-push-teal shrink-0 px-5 py-2.5 min-h-[44px] rounded-full bg-teal text-white font-display font-bold flex items-center gap-2"
           >
-            ← Beranda
+            ← Home
           </Link>
         </div>
 
@@ -98,7 +98,7 @@ export default function GamesPage() {
             <div ref={gameRootRef} className="perang-kertas-host w-full" />
           </section>
         ) : (
-          <section aria-label="Daftar game" className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <section aria-label="Game list" className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {GAMES.map((g) => (
               <button
                 key={g.id}
@@ -112,7 +112,7 @@ export default function GamesPage() {
                 <span className="text-xl font-bold">{g.title}</span>
                 <span className="text-sm font-semibold leading-relaxed opacity-95">{g.tagline}</span>
                 <span className="mt-2 self-start px-4 py-2 min-h-[44px] rounded-full bg-white/25 text-sm font-bold flex items-center">
-                  Main sekarang ▶
+                  Play now ▶
                 </span>
               </button>
             ))}

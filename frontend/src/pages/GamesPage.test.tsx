@@ -12,9 +12,9 @@ describe('GamesPage', () => {
     )
     expect(screen.getByRole('heading', { name: /game zone/i })).toBeTruthy()
     expect(screen.getByText('Perang Kertas')).toBeTruthy()
-    expect(screen.getAllByText(/main sekarang/i).length).toBe(3)
-    // Tagline in Indonesian
-    expect(screen.getByText(/lipat kertas/i)).toBeTruthy()
+    expect(screen.getAllByText(/play now/i).length).toBe(3)
+    // Tagline in English
+    expect(screen.getByText(/fold the paper/i)).toBeTruthy()
     // New games wired into the hub
     expect(screen.getByText('Word Hangman 🎩')).toBeTruthy()
     expect(screen.getByText('Quick Math ⚡')).toBeTruthy()
