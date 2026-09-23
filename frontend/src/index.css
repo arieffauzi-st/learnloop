@@ -100,3 +100,47 @@ body {
     animation: none;
   }
 }
+
+/* 2D hero illustration micro-animations (layered scene in HeroIllustration) */
+@keyframes hero-drift {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-7px) rotate(2deg); }
+}
+.hero-float {
+  animation: hero-drift 4s ease-in-out infinite;
+}
+.hero-float-slow {
+  animation: hero-drift 6.5s ease-in-out infinite;
+}
+@keyframes hero-arm-wave {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-12deg); }
+}
+.hero-arm {
+  transform-origin: 288px 268px;
+  animation: hero-arm-wave 2.4s ease-in-out infinite;
+}
+/* Playful hover bounce on the mascot character */
+.hero-mascot {
+  transform-origin: 228px 356px;
+  transition: transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.hero-mascot:hover {
+  transform: translateY(-10px) scale(1.03);
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-float,
+  .hero-float-slow,
+  .hero-arm {
+    animation: none;
+  }
+  .hero-mascot,
+  .hero-mascot:hover {
+    transition: none;
+    transform: none;
+  }
+  /* Freeze lottie micro-animations instead of playing them */
+  [data-lottie-sparkle] svg * {
+    animation-play-state: paused !important;
+  }
+}
