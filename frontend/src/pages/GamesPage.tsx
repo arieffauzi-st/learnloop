@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { createPerangKertas } from '../games/perang-kertas/app'
+import { createHangman } from '../games/hangman/app'
+import { createMathQuiz } from '../games/math-quiz/app'
 
 type GameCard = {
   id: string
@@ -18,7 +20,28 @@ const GAMES: GameCard[] = [
     tagline: 'Lipat kertas, sembunyikan pasukanmu, dan kena-kan stickman lawan! Main bergantian di satu layar.',
     gradient: 'from-coral/80 via-sunny/70 to-teal/70',
   },
+  {
+    id: 'hangman',
+    emoji: '🎩',
+    title: 'Word Hangman 🎩',
+    tagline: 'Guess the secret word letter by letter — use the hint, and keep the stickman safe! English only.',
+    gradient: 'from-teal/80 via-teal/60 to-coral/70',
+  },
+  {
+    id: 'math-quiz',
+    emoji: '⚡',
+    title: 'Quick Math ⚡',
+    tagline: 'Beat the clock! 10 quick math questions — add, subtract, multiply. Win up to 3 stars!',
+    gradient: 'from-sunny/80 via-coral/70 to-teal/70',
+  },
 ]
+
+/** Mount factories per game id — imperative mount with cleanup on unmount. */
+const GAME_FACTORIES: Record<string, (root: HTMLElement, opts: { embedded: boolean; onHome: () => void }) => () => void> = {
+  'perang-kertas': createPerangKertas,
+  hangman: createHangman,
+  'math-quiz': createMathQuiz,
+}
 
 /** Public kids' games hub at /games (no auth). Selecting a card mounts the
  *  game imperatively via createPerangKertas(root, opts) — cleanup on unmount. */
@@ -28,7 +51,8 @@ export default function GamesPage() {
 
   useEffect(() => {
     if (!activeGame || !gameRootRef.current) return
-    const destroy = createPerangKertas(gameRootRef.current, {
+    const mount = GAME_FACTORIES[activeGame.id] ?? createPerangKertas
+    const destroy = mount(gameRootRef.current, {
       embedded: true,
       onHome: () => setActiveGame(null),
     })
@@ -59,6 +83,18 @@ export default function GamesPage() {
 
         {activeGame ? (
           <section aria-label={activeGame.title} className="bg-white rounded-3xl shadow-lift border border-border-soft overflow-hidden">
+            <div className="flex items-center justify-between gap-3 px-4 pt-4">
+              <span className="font-display font-bold text-lg">
+                {activeGame.emoji} {activeGame.title}
+              </span>
+              <button
+                type="button"
+                onClick={() => setActiveGame(null)}
+                className="btn-push-teal px-5 py-2.5 min-h-[44px] rounded-full bg-teal text-white font-display font-bold flex items-center gap-2"
+              >
+                ← Games hub
+              </button>
+            </div>
             <div ref={gameRootRef} className="perang-kertas-host w-full" />
           </section>
         ) : (

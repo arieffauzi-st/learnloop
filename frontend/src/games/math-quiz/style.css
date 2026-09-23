@@ -1,0 +1,225 @@
+/* Quick Math — scoped under .mathquiz (cream/coral/teal palette) */
+
+.mathquiz {
+  --mq-ink: #3a2e39;
+  --mq-cream: #fff9f0;
+  --mq-coral: #ff6b6b;
+  --mq-teal: #4ecdc4;
+  --mq-sunny: #ffd93d;
+  color: var(--mq-ink);
+  font-family: 'Nunito', system-ui, sans-serif;
+  min-height: 100%;
+  padding: 1rem 1.25rem 1.5rem;
+  background: var(--mq-cream);
+}
+
+.mathquiz .topbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.mathquiz h1 {
+  margin: 0.1rem 0 0.25rem;
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+.mathquiz .brand p {
+  margin: 0;
+  opacity: 0.75;
+  font-size: 0.9rem;
+}
+
+.mathquiz .brand-kicker {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--mq-teal);
+}
+
+.mathquiz .mq-btn {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 999px;
+  background: var(--mq-teal);
+  color: #fff;
+  font-weight: 800;
+  font-size: 1.05rem;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.mathquiz .mq-btn:hover:not(:disabled) {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+}
+
+.mathquiz .mq-btn.ghost {
+  background: transparent;
+  color: var(--mq-ink);
+  border: 2px solid rgba(58, 46, 57, 0.2);
+}
+
+.mathquiz .mq-btn.big {
+  background: var(--mq-coral);
+  font-size: 1.1rem;
+}
+
+.mathquiz .mq-card {
+  background: #fff;
+  border: 1px solid rgba(58, 46, 57, 0.08);
+  border-radius: 20px;
+  padding: 1.25rem;
+  box-shadow: 0 10px 28px rgba(58, 46, 57, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.mathquiz .mq-toprow {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.mathquiz .mq-progressbar {
+  flex: 1;
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(58, 46, 57, 0.1);
+  overflow: hidden;
+}
+
+.mathquiz .mq-progressfill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--mq-teal);
+  transition: width 0.3s ease;
+}
+
+.mathquiz .mq-count {
+  font-weight: 700;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.mathquiz .mq-timer {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+}
+
+.mathquiz .mq-ringwrap {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.mathquiz .mq-ringtrack,
+.mathquiz .mq-ring {
+  fill: none;
+  stroke-width: 9;
+  stroke-linecap: round;
+}
+
+.mathquiz .mq-ringtrack {
+  stroke: rgba(58, 46, 57, 0.1);
+}
+
+.mathquiz .mq-ring {
+  stroke: var(--mq-sunny);
+  stroke-dasharray: 282.7;
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 1s linear, stroke 0.3s ease;
+}
+
+.mathquiz .mq-time {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.mathquiz .mq-question {
+  font-size: 2.4rem;
+  font-weight: 800;
+  text-align: center;
+  padding: 0.5rem 0;
+}
+
+.mathquiz .mq-choices {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 0.75rem;
+}
+
+.mathquiz .mq-btn.choice {
+  border-radius: 16px;
+  background: rgba(78, 205, 196, 0.12);
+  color: var(--mq-ink);
+  border: 2px solid rgba(78, 205, 196, 0.4);
+  font-size: 1.4rem;
+  min-height: 56px;
+}
+
+.mathquiz .mq-btn.choice:hover:not(:disabled) {
+  background: rgba(78, 205, 196, 0.25);
+}
+
+.mathquiz .mq-btn.choice.correct {
+  background: var(--mq-teal);
+  border-color: var(--mq-teal);
+  color: #fff;
+}
+
+.mathquiz .mq-btn.choice.incorrect {
+  background: rgba(255, 107, 107, 0.15);
+  border-color: var(--mq-coral);
+  color: var(--mq-coral);
+}
+
+.mathquiz .mq-feedback {
+  min-height: 1.6rem;
+  text-align: center;
+  font-weight: 800;
+  font-size: 1.1rem;
+}
+
+.mathquiz .mq-feedback.right {
+  color: #1d9a76;
+}
+
+.mathquiz .mq-feedback.wrongfb {
+  color: var(--mq-coral);
+}
+
+.mathquiz .mq-card.score {
+  align-items: center;
+  text-align: center;
+}
+
+.mathquiz .mq-stars {
+  font-size: 2.6rem;
+  letter-spacing: 0.1em;
+}
+
+.mathquiz .mq-scoretitle {
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+.mathquiz .mq-scoreshow {
+  margin: 0;
+  font-size: 1.1rem;
+  opacity: 0.8;
+}
