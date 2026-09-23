@@ -233,6 +233,12 @@
   min-height: 1.2em;
 }
 
+.perang-kertas .pk-sub {
+  font-size: 0.78rem;
+  opacity: 0.55;
+  margin-top: -0.25rem;
+}
+
 /* --- LearnLoop responsive tweaks (mobile-first, 360px friendly) --- */
 @media (max-width: 960px) {
   .perang-kertas .topbar {
