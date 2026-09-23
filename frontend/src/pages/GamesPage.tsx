@@ -16,8 +16,8 @@ const GAMES: GameCard[] = [
   {
     id: 'perang-kertas',
     emoji: '📄⚔️',
-    title: 'Perang Kertas',
-    tagline: 'Fold the paper, hide your soldiers, and hit the opponent stickmen! Take turns on one screen.',
+    title: 'Paper War',
+    tagline: 'Fold the paper, hide your soldiers, and hit the opponent stickmen! Take turns on one screen — or play online across two devices.',
     gradient: 'from-coral/80 via-sunny/70 to-teal/70',
   },
   {
