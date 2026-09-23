@@ -11,6 +11,7 @@ import ParentDashboard from './pages/ParentDashboard'
 import StudentDashboard from './pages/StudentDashboard'
 import TeacherDashboard from './pages/TeacherDashboard'
 import NotFound from './pages/NotFound'
+import GamesPage from './pages/GamesPage'
 
 // "/": anonymous -> public landing page; authenticated -> role dashboard.
 function RootRedirect() {
@@ -32,6 +33,7 @@ createRoot(document.getElementById('root')!).render(
         <Routes>
           <Route path="/" element={<RootRedirect />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/games" element={<GamesPage />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/teacher" element={<RequireRole role="teacher"><TeacherDashboard /></RequireRole>} />
           <Route path="/student" element={<RequireRole role="student"><StudentDashboard /></RequireRole>} />
