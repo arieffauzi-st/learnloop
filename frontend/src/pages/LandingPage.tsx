@@ -1,18 +1,11 @@
-import { lazy, Suspense } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { PaperBuddySvg, RocketBuddySvg, StarBuddySvg } from '../components/characters/BuddySvgs'
-
-/** 3D hero scene is lazy: code-split so first paint is never blocked, and the
- *  static SVG buddy below renders until it (or on WebGL-less devices, forever). */
-const HeroScene = lazy(() => import('../components/three/HeroScene'))
-
-function HeroSceneFallback() {
-  return (
-    <div className="w-full h-full flex items-center justify-center">
-      <PaperBuddySvg className="w-32 h-32 animate-float" />
-    </div>
-  )
-}
+import { Link } from 'react-router-dom'
+import {
+  PaperBuddySvg,
+  RocketBuddySvg,
+  StarBuddySvg,
+} from '../components/characters/BuddySvgs'
+import { HeroIllustration } from '../components/characters/HeroIllustration'
+import { LottieSparkle } from '../components/characters/LottieSparkle'
 
 const DEMO_ROLES = [
   { role: 'student', emoji: '🎒', label: 'Try as Student', color: 'bg-coral', push: 'btn-push-coral' },
@@ -39,10 +32,11 @@ const FEATURES = [
 ]
 
 /** Public landing page ("/") for anonymous visitors, styled after the Stitch
- *  landing mockup (design/stitch/landing). Signed-in users never see this —
- *  the root route redirects them to their role dashboard. */
+ *  landing mockup (design/stitch/landing). The hero visual is a hand-crafted
+ *  2D inline-SVG meadow illustration (Three.js removed) with Lottie sparkle
+ *  micro-animations. Signed-in users never see this — the root route
+ *  redirects them to their role dashboard. */
 export default function LandingPage() {
-  const navigate = useNavigate()
   return (
     <main className="min-h-screen bg-cream font-body text-ink overflow-hidden relative">
       {/* Ambient decorative glows (mock: layered overlapping blobs) */}
@@ -75,41 +69,40 @@ export default function LandingPage() {
               </span>
             </div>
           </div>
-          <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight">
-            Homework that feels like <span className="text-coral">play</span> <span className="inline-block">✨</span>
-          </h1>
-          <p className="text-muted mt-4 max-w-xl text-lg leading-relaxed">
-            Missions, rewards and happy loops — the school hub where kids want to
-            do their homework, and teachers and parents can see it all at a glance.
-          </p>
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 mt-6 w-full sm:w-auto">
-            <Link
-              to="/login"
-              className="btn-push-coral px-8 py-3 min-h-[44px] rounded-full bg-coral text-white font-display font-bold flex items-center justify-center gap-2"
-            >
-              Sign in <span>🎒</span>
-            </Link>
-            <Link
-              to="/login"
-              className="btn-push-teal px-8 py-3 min-h-[44px] rounded-full bg-teal text-white font-display font-bold flex items-center justify-center gap-2"
-            >
-              Create account <span>🌱</span>
-            </Link>
-          </div>
-          {/* Social proof cluster (mock: overlapping character avatars) */}
-          <div className="flex items-center justify-center gap-4 mt-8">
-            <div className="flex -space-x-2">
-              <div className="w-9 h-9 rounded-full bg-teal/20 border-2 border-white shadow-md overflow-hidden flex items-center justify-center">
-                <PaperBuddySvg className="w-8 h-8" />
+
+          {/* Mockup hero: two-column on lg — text left, illustrated meadow right */}
+          <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10 items-center text-center lg:text-left mt-2">
+            <div className="flex flex-col items-center lg:items-start">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-border-soft shadow-sm font-display text-xs font-bold text-teal-dark mb-4">
+                <span aria-hidden>✨</span> Elementary homework revolution (ages 7–12)
               </div>
-              <div className="w-9 h-9 rounded-full bg-sunny/40 border-2 border-white shadow-md overflow-hidden flex items-center justify-center">
-                <StarBuddySvg className="w-8 h-8" />
-              </div>
-              <div className="w-9 h-9 rounded-full bg-coral/20 border-2 border-white shadow-md overflow-hidden flex items-center justify-center">
-                <RocketBuddySvg className="w-8 h-8" />
+              <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight">
+                Homework that feels like{' '}
+                <span className="text-coral">play</span>{' '}
+                <LottieSparkle className="inline-block w-9 h-9 sm:w-11 sm:h-11 align-[-0.45em]" />
+              </h1>
+              <p className="text-muted mt-4 max-w-xl text-lg leading-relaxed">
+                Missions, rewards and happy loops — the school hub where kids want to
+                do their homework, and teachers and parents can see it all at a glance.
+              </p>
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mt-6 w-full sm:w-auto">
+                <Link
+                  to="/login"
+                  className="btn-push-coral px-8 py-3 min-h-[44px] rounded-full bg-coral text-white font-display font-bold flex items-center justify-center gap-2"
+                >
+                  Sign in <span>🎒</span>
+                </Link>
+                <Link
+                  to="/login"
+                  className="btn-push-teal px-8 py-3 min-h-[44px] rounded-full bg-teal text-white font-display font-bold flex items-center justify-center gap-2"
+                >
+                  Create account <span>🌱</span>
+                </Link>
               </div>
             </div>
-            <span className="font-display text-sm font-bold text-teal-dark">Join the loop!</span>
+
+            {/* 2D illustrated meadow scene (replaces the old Three.js diorama) */}
+            <HeroIllustration className="w-full max-w-md lg:max-w-none mx-auto rounded-3xl shadow-float border border-border-soft" />
           </div>
         </header>
 
@@ -131,7 +124,8 @@ export default function LandingPage() {
               </span>
               <div className="flex-1">
                 <h2 className="font-display text-3xl md:text-5xl font-bold leading-tight drop-shadow-sm">
-                  New Game Zone! <span aria-hidden>🎉</span>
+                  New Game Zone!{' '}
+                  <LottieSparkle className="inline-block w-10 h-10 md:w-14 md:h-14 align-[-0.5em] drop-shadow" />
                 </h2>
                 <p className="font-semibold text-white/95 mt-2 text-lg md:text-xl leading-relaxed">
                   Fold it, hide your army, and strike — play{' '}
@@ -145,55 +139,47 @@ export default function LandingPage() {
           </Link>
         </section>
 
-        {/* Product preview: quest-card mockup + lazy 3D hero scene, side by
-            side on md+, stacked on mobile (scene capped ~260px tall there). */}
-        <section aria-label="Product preview" className="relative w-full max-w-5xl mt-12 grid md:grid-cols-2 gap-6 md:gap-8 items-center">
-          <div className="relative w-full max-w-md mx-auto">
-            <div className="absolute -top-4 -right-2 sm:-right-4 px-4 py-1.5 rounded-full bg-sunny text-ink font-display text-xs font-bold shadow-md rotate-6 z-10">
-              ⭐ Lv 5 Explorer
+        {/* Product preview: quest-card mockup (mock: floating XP dashboard card) */}
+        <section aria-label="Product preview" className="relative w-full max-w-5xl mt-12 flex justify-center">
+          <div className="relative w-full max-w-md">
+            <div className="absolute -top-4 -right-2 sm:-right-4 px-4 py-1.5 rounded-full bg-sunny text-ink font-display text-xs font-bold shadow-md rotate-6 z-10 flex items-center gap-1">
+              <LottieSparkle className="w-5 h-5" /> Lv 5 Explorer
             </div>
-          <div className="shadow-float rounded-3xl bg-white p-5 text-left border border-border-soft">
-            <div className="flex items-center gap-3 pb-4">
-              <div className="w-14 h-14 rounded-2xl bg-warm flex items-center justify-center text-2xl shadow-inner">
-                🧒
-              </div>
-              <div className="flex flex-col">
-                <span className="font-display font-bold">Explorer</span>
-                <span className="text-xs font-semibold text-teal-dark flex items-center gap-1">
-                  <span className="w-2 h-2 rounded-full bg-teal inline-block" /> on an adventure
-                </span>
-              </div>
-              <div className="ml-auto flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-sunny/30 text-amber-warm text-xs font-bold shadow-inner">
-                🔥 7-day streak!
-              </div>
-            </div>
-            <div className="bg-warm/70 rounded-2xl p-3 mb-4">
-              <div className="flex justify-between items-center text-xs font-semibold text-muted mb-1.5">
-                <span>Next milestone</span>
-                <span className="text-coral font-bold">425 / 500 XP</span>
-              </div>
-              <div className="w-full h-4 bg-warm rounded-full overflow-hidden p-0.5 shadow-inner">
-                <div className="h-full bg-gradient-to-r from-sunny to-coral rounded-full w-[85%]" />
-              </div>
-            </div>
-            <div className="bg-cream rounded-2xl p-4 shadow-sm">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-teal/20 flex items-center justify-center text-lg">🪐</div>
-                <div className="flex flex-col">
-                  <span className="font-display text-sm font-bold">Quest complete!</span>
-                  <span className="text-xs text-muted">+25 XP earned ⭐</span>
+            <div className="shadow-float rounded-3xl bg-white p-5 text-left border border-border-soft">
+              <div className="flex items-center gap-3 pb-4">
+                <div className="w-14 h-14 rounded-2xl bg-warm flex items-center justify-center text-2xl shadow-inner">
+                  🧒
                 </div>
-                <span className="ml-auto text-xs font-bold px-2.5 py-1 rounded-full bg-teal/15 text-teal-dark">✓ Done</span>
+                <div className="flex flex-col">
+                  <span className="font-display font-bold">Explorer</span>
+                  <span className="text-xs font-semibold text-teal-dark flex items-center gap-1">
+                    <span className="w-2 h-2 rounded-full bg-teal inline-block" /> on an adventure
+                  </span>
+                </div>
+                <div className="ml-auto flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-sunny/30 text-amber-warm text-xs font-bold shadow-inner">
+                  🔥 7-day streak!
+                </div>
+              </div>
+              <div className="bg-warm/70 rounded-2xl p-3 mb-4">
+                <div className="flex justify-between items-center text-xs font-semibold text-muted mb-1.5">
+                  <span>Next milestone</span>
+                  <span className="text-coral font-bold">425 / 500 XP</span>
+                </div>
+                <div className="w-full h-4 bg-warm rounded-full overflow-hidden p-0.5 shadow-inner">
+                  <div className="h-full bg-gradient-to-r from-sunny to-coral rounded-full w-[85%]" />
+                </div>
+              </div>
+              <div className="bg-cream rounded-2xl p-4 shadow-sm">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-teal/20 flex items-center justify-center text-lg">🪐</div>
+                  <div className="flex flex-col">
+                    <span className="font-display text-sm font-bold">Quest complete!</span>
+                    <span className="text-xs text-muted">+25 XP earned ⭐</span>
+                  </div>
+                  <span className="ml-auto text-xs font-bold px-2.5 py-1 rounded-full bg-teal/15 text-teal-dark">✓ Done</span>
+                </div>
               </div>
             </div>
-          </div>
-          </div>
-
-          {/* Lazy 3D hero scene (static SVG buddy until WebGL loads / if absent) */}
-          <div className="relative w-full h-[260px] md:h-[400px] rounded-3xl bg-white/70 border border-border-soft shadow-lift overflow-hidden">
-            <Suspense fallback={<HeroSceneFallback />}>
-              <HeroScene onNavigate={navigate} />
-            </Suspense>
           </div>
         </section>
 
