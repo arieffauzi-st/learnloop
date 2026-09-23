@@ -1,0 +1,1 @@
+Character model from Quaternius "Ultimate Platformer Pack" (Dec 2021), https://quaternius.com — License CC0 (https://creativecommons.org/publicdomain/zero/1.0/). Converted .gltf -> .glb. Free for personal, educational and commercial use, no attribution required.
