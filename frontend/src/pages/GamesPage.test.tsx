@@ -4,14 +4,14 @@ import { MemoryRouter } from 'react-router-dom'
 import GamesPage from './GamesPage'
 
 describe('GamesPage', () => {
-  it('renders the games hub with the Perang Kertas card', () => {
+  it('renders the games hub with the Paper War card', () => {
     render(
       <MemoryRouter>
         <GamesPage />
       </MemoryRouter>,
     )
     expect(screen.getByRole('heading', { name: /game zone/i })).toBeTruthy()
-    expect(screen.getByText('Perang Kertas')).toBeTruthy()
+    expect(screen.getByText('Paper War')).toBeTruthy()
     expect(screen.getAllByText(/play now/i).length).toBe(3)
     // Tagline in English
     expect(screen.getByText(/fold the paper/i)).toBeTruthy()

@@ -1,17 +1,27 @@
 import "./style.css";
 /**
- * LearnLoop port of ForFun `perang-kertas` — HOTSEAT ONLY.
- * The online (2 PC / MQTT) mode from the reference repo is intentionally not
- * wired in this PR: net/roomLink.ts is excluded so `mqtt` is never bundled.
- * (net/protocol.ts is ported verbatim for future online work.)
+ * LearnLoop port of ForFun `perang-kertas` — hotseat + online (2 PC) modes.
+ * Online sync follows the reference protocol: hit checks run on the defender's
+ * PC and living soldier positions never leave the owning machine.
  */
+import { connectRoom, type RoomLink } from "./net/roomLink";
+import { randomRoomCode, type NetMsg } from "./net/protocol";
+
 export type PerangKertasOptions = {
   embedded?: boolean;
   onHome?: () => void;
 };
 
 type Side = "left" | "right";
-type Phase = "menu" | "deploy" | "ink" | "folding" | "reveal" | "over";
+type Mode = "hotseat" | "online";
+type Phase =
+  | "menu"
+  | "lobby"
+  | "deploy"
+  | "ink"
+  | "folding"
+  | "reveal"
+  | "over";
 
 type Soldier = {
   id: number;
@@ -19,6 +29,8 @@ type Soldier = {
   nx: number;
   ny: number;
   alive: boolean;
+  /** Revealed fallen enemy (online) — living enemies never come from the peer. */
+  foreign?: boolean;
 };
 
 type Blot = {
@@ -40,7 +52,9 @@ export function createPerangKertas(
   root: HTMLElement,
   options: PerangKertasOptions = {},
 ): () => void {
+  let mode: Mode = "hotseat";
   let phase: Phase = "menu";
+  let mySide: Side = "left";
   let deploySide: Side = "left";
   let turn: Side = "left";
   let soldiers: Soldier[] = [];
@@ -55,14 +69,25 @@ export function createPerangKertas(
   let raf = 0;
   let foldRaf = 0;
 
+  // Online
+  let link: RoomLink | null = null;
+  let roomCode = "";
+  let onlineRole: "host" | "guest" | null = null;
+  let iDeployed = false;
+  let theyDeployed = false;
+  let myRemaining = SOLDIERS_PER_SIDE;
+  let theirRemaining = SOLDIERS_PER_SIDE;
+  let netStatus = "";
+
   const shell = () => {
     root.innerHTML = `
     <div class="perang-kertas">
       <header class="topbar">
         <div class="brand">
-          <div class="brand-kicker">LearnLoop · Perang Kertas</div>
-          <h1>Perang Kertas</h1>
-          <p>Lipat kertas, sembunyikan pasukanmu, and try to guess where the opponent hides. One screen, take turns.</p>
+          <div class="brand-kicker">LearnLoop · Paper War</div>
+          <h1>Paper War</h1>
+          <p class="pk-sub">(Perang Kertas)</p>
+          <p>Fold the paper, hide your army, and outguess your opponent — on one screen or across two computers.</p>
         </div>
         ${
           options.embedded
@@ -81,7 +106,13 @@ export function createPerangKertas(
   shell();
   const view = () => root.querySelector<HTMLElement>("#view")!;
 
+  function destroyLink(): void {
+    link?.destroy();
+    link = null;
+  }
+
   function goMenu(): void {
+    destroyLink();
     phase = "menu";
     renderMenu();
   }
@@ -90,25 +121,161 @@ export function createPerangKertas(
     view().innerHTML = `
       <div class="pk-menu">
         <div class="card pk-menu-card">
-          <h2>Pilih cara main</h2>
-          <p class="explain">Available mode: <strong>One PC (take turns)</strong> — two players share one screen; the opponent's side stays hidden so positions remain secret.</p>
+          <h2>Choose how to play</h2>
+          <p class="explain"><strong>Hotseat (one device)</strong> — two players share one screen; the opponent's side stays hidden so positions remain secret.</p>
+          <p class="explain">For <strong>Online (2 devices)</strong>: one player creates a room → gets a <strong>code</strong> → shares it with the opponent (chat/whatever you like). The other player types that same code and joins. Nobody without the code can enter your game.</p>
           <div class="btn-row" style="margin-top:1rem">
-            <button type="button" class="btn" id="hotseat">One PC (take turns)</button>
-            <button type="button" class="btn warm" id="onlineSoon" disabled title="Coming soon">Online · 2 PCs (coming soon)</button>
+            <button type="button" class="btn" id="hotseat">Hotseat (one device)</button>
+            <button type="button" class="btn warm" id="host">Online (2 devices) — create a room</button>
+          </div>
+          <p class="explain" style="margin-top:1rem;margin-bottom:0.35rem">Got a code from your opponent?</p>
+          <div class="pk-join">
+            <input id="joinCode" maxlength="5" placeholder="Type the code here" autocomplete="off" />
+            <button type="button" class="btn" id="join">Join</button>
           </div>
           <p class="pk-note" id="menuErr"></p>
         </div>
       </div>
     `;
     view().querySelector("#hotseat")!.addEventListener("click", () => {
+      mode = "hotseat";
       startHotseat();
     });
+    view().querySelector("#host")!.addEventListener("click", () => {
+      mode = "online";
+      onlineRole = "host";
+      mySide = "left";
+      roomCode = randomRoomCode();
+      startLobbyHost();
+    });
+    view().querySelector("#join")!.addEventListener("click", () => {
+      const code = (
+        view().querySelector<HTMLInputElement>("#joinCode")?.value || ""
+      )
+        .trim()
+        .toUpperCase();
+      const err = view().querySelector("#menuErr")!;
+      if (code.length < 4) {
+        err.textContent =
+          "Enter the room code you got from the player who created the room.";
+        return;
+      }
+      mode = "online";
+      onlineRole = "guest";
+      mySide = "right";
+      roomCode = code;
+      startLobbyGuest();
+    });
+  }
+
+  function friendlyNetError(message: string): string {
+    return `Connection problem: ${message}. Please check your internet and try again.`;
+  }
+
+  function startLobbyHost(): void {
+    phase = "lobby";
+    netStatus = "Preparing your room…";
+    renderLobby();
+    let started = false;
+    const startOnce = () => {
+      if (started) return;
+      started = true;
+      netStatus = "Opponent connected!";
+      link?.send({ type: "ready-ping", role: "host" });
+      renderLobby();
+      window.setTimeout(() => beginOnlineDeploy(), 400);
+    };
+    link = connectRoom(roomCode, "host", {
+      onBrokerReady: () => {
+        netStatus = "Room is live — waiting for your opponent to type the code…";
+        renderLobby();
+      },
+      onOpen: startOnce,
+      onMsg: onNetMsg,
+      onClose: () => {
+        netStatus = "Connection lost.";
+        renderLobby();
+      },
+      onError: (m) => {
+        netStatus = friendlyNetError(m);
+        renderLobby();
+      },
+    });
+  }
+
+  function startLobbyGuest(): void {
+    phase = "lobby";
+    netStatus = "Connecting to the room…";
+    renderLobby();
+    let started = false;
+    const startOnce = () => {
+      if (started) return;
+      started = true;
+      netStatus = "Connected to the host!";
+      link?.send({ type: "ready-ping", role: "guest" });
+      renderLobby();
+      window.setTimeout(() => beginOnlineDeploy(), 400);
+    };
+    link = connectRoom(roomCode, "guest", {
+      onBrokerReady: () => {
+        netStatus = "Joining the broker… looking for the host with this code…";
+        renderLobby();
+      },
+      onOpen: startOnce,
+      onMsg: onNetMsg,
+      onClose: () => {
+        netStatus = "Connection lost.";
+        renderLobby();
+      },
+      onError: (m) => {
+        netStatus = friendlyNetError(m);
+        renderLobby();
+      },
+    });
+  }
+
+  function renderLobby(): void {
+    const isHost = onlineRole === "host";
+    view().innerHTML = `
+      <div class="pk-menu">
+        <div class="card pk-menu-card">
+          <h2>${isHost ? "You are the host" : "Joining…"}</h2>
+          ${
+            isHost
+              ? `<p class="explain">Share this code with your opponent (only 1 person):</p>
+                 <p class="explain">Code: <strong class="pk-code">${roomCode}</strong></p>
+                 <p class="explain">Your opponent opens this page → Paper War → types the code → <strong>Join</strong>. Anyone without the code cannot enter your game.</p>`
+              : `<p class="explain">Code: <strong class="pk-code">${roomCode}</strong></p>
+                 <p class="explain">Connecting to the host…</p>`
+          }
+          <p class="explain">You play on the <strong>${mySide === "left" ? "LEFT" : "RIGHT"}</strong> field</p>
+          <p class="explain" id="lobbyStatus">${netStatus}</p>
+          <div class="btn-row">
+            <button type="button" class="btn ghost" id="backMenu">← Cancel</button>
+          </div>
+        </div>
+      </div>
+    `;
+    view().querySelector("#backMenu")!.addEventListener("click", goMenu);
+  }
+
+  function beginOnlineDeploy(): void {
+    resetMatchState();
+    phase = "deploy";
+    deploySide = mySide;
+    iDeployed = false;
+    theyDeployed = false;
+    renderGameShell();
+    updateHud();
+    resize();
   }
 
   function startHotseat(): void {
     resetMatchState();
+    mode = "hotseat";
     phase = "deploy";
     deploySide = "left";
+    mySide = "left";
     turn = "left";
     renderGameShell();
     updateHud();
@@ -124,6 +291,8 @@ export function createPerangKertas(
     lastResult = null;
     winner = null;
     revealSide = null;
+    myRemaining = SOLDIERS_PER_SIDE;
+    theirRemaining = SOLDIERS_PER_SIDE;
     if (revealTimer !== null) {
       window.clearTimeout(revealTimer);
       revealTimer = null;
@@ -139,16 +308,20 @@ export function createPerangKertas(
         </section>
         <aside class="side">
           <div class="card">
-            <h2>Cara main</h2>
+            <h2>How to play</h2>
             <ol class="steps">
               <li>Place <strong>${SOLDIERS_PER_SIDE} stickmen</strong> on your field. The opponent's side stays hidden.</li>
               <li>Drop an <strong>ink dot</strong> on your paper — it folds over to the opponent.</li>
               <li>Repeat until <strong>all</strong> of the opponent's soldiers are hit.</li>
-              <li>One PC mode · take turns, sides stay hidden.</li>
+              ${
+                mode === "online"
+                  ? `<li>2-PC mode · code <strong>${roomCode}</strong> · living armies are never sent over the network.</li>`
+                  : `<li>One-screen mode · take turns, sides stay hidden.</li>`
+              }
             </ol>
             <div class="btn-row">
-              <button type="button" class="btn warm" id="reset">Main lagi</button>
-              <button type="button" class="btn ghost" id="toMenu">Ganti mode</button>
+              <button type="button" class="btn warm" id="reset">Play again</button>
+              <button type="button" class="btn ghost" id="toMenu">Change mode</button>
             </div>
           </div>
           <div class="card">
@@ -175,8 +348,17 @@ export function createPerangKertas(
     explainEl = view().querySelector("#explain")!;
     statsEl = view().querySelector("#stats")!;
     canvas.addEventListener("pointerdown", onPointerDown);
-    view().querySelector("#reset")!.addEventListener("click", () => startHotseat());
+    view().querySelector("#reset")!.addEventListener("click", onResetClick);
     view().querySelector("#toMenu")!.addEventListener("click", goMenu);
+  }
+
+  function onResetClick(): void {
+    if (mode === "online") {
+      link?.send({ type: "play-again" });
+      beginOnlineDeploy();
+      return;
+    }
+    startHotseat();
   }
 
   function w(): number {
@@ -196,14 +378,22 @@ export function createPerangKertas(
   }
 
   function countAlive(side: Side): number {
-    return soldiers.filter((s) => s.side === side && s.alive).length;
+    return soldiers.filter((s) => s.side === side && s.alive && !s.foreign)
+      .length;
   }
 
   function deployedMine(): number {
+    if (mode === "online") {
+      return soldiers.filter((s) => s.side === mySide && !s.foreign).length;
+    }
     return soldiers.filter((s) => s.side === deploySide).length;
   }
 
   function visibleSide(): Side {
+    if (mode === "online") {
+      if (phase === "reveal" && revealSide) return revealSide;
+      return mySide;
+    }
     if (phase === "deploy") return deploySide;
     if (phase === "folding" && pendingDot) return pendingDot.side;
     if (phase === "reveal" && revealSide) return revealSide;
@@ -212,11 +402,16 @@ export function createPerangKertas(
   }
 
   function bothSidesOpen(): boolean {
-    return phase === "over";
+    return mode === "hotseat" && phase === "over";
   }
 
   function updateHud(): void {
-    if (phase === "menu") return;
+    if (phase === "menu" || phase === "lobby") return;
+
+    if (mode === "online") {
+      updateHudOnline();
+      return;
+    }
 
     const leftN = countAlive("left");
     const rightN = countAlive("right");
@@ -259,7 +454,60 @@ export function createPerangKertas(
     statsEl.innerHTML = `
       <div class="stat"><span>Left remaining</span><strong>${leftN}/${SOLDIERS_PER_SIDE}</strong></div>
       <div class="stat"><span>Right remaining</span><strong>${rightN}/${SOLDIERS_PER_SIDE}</strong></div>
-      <div class="stat"><span>Dot</span><strong>${blots.length}</strong></div>
+      <div class="stat"><span>Dots</span><strong>${blots.length}</strong></div>
+    `;
+  }
+
+  function updateHudOnline(): void {
+    if (phase === "deploy") {
+      const need = SOLDIERS_PER_SIDE - deployedMine();
+      explainEl.textContent = iDeployed
+        ? theyDeployed
+          ? "Both players are ready…"
+          : "You are ready. Waiting for the opponent to finish placing…"
+        : `Place stickmen on your ${mySide === "left" ? "LEFT" : "RIGHT"} field — ${need} more. The opponent never sees these positions.`;
+      hintEl.textContent = iDeployed
+        ? "Waiting for opponent"
+        : `Place on the ${mySide === "left" ? "LEFT" : "RIGHT"} side`;
+    } else if (phase === "ink") {
+      const mine = turn === mySide;
+      const bit =
+        lastResult === "kena"
+          ? " That dot was a HIT! "
+          : lastResult === "miss"
+            ? " That dot missed. "
+            : " ";
+      explainEl.textContent = mine
+        ? `Your turn to drop ink.${bit}Opponent has ${theirRemaining} left (positions secret).`
+        : `Opponent's turn.${bit}Your army has ${myRemaining} left.`;
+      hintEl.textContent = mine
+        ? "Drop a dot on your field"
+        : "Waiting for the opponent to drop ink…";
+    } else if (phase === "folding") {
+      explainEl.textContent =
+        "Folding… the ink is sent to the opponent's PC for the hit check.";
+      hintEl.textContent = "Fold + check on opponent's PC";
+    } else if (phase === "reveal") {
+      explainEl.textContent =
+        lastResult === "kena"
+          ? "HIT! (only the fallen stickman is shown)"
+          : "Missed — the opponent's living army stays hidden.";
+      hintEl.textContent = "Result";
+    } else if (phase === "over") {
+      explainEl.textContent =
+        winner === "draw"
+          ? "It's a draw."
+          : winner === mySide
+            ? "You win — the whole opponent army is down!"
+            : "You lose — your whole army is down.";
+      hintEl.textContent = "Game over";
+    }
+
+    statsEl.innerHTML = `
+      <div class="stat"><span>Your army</span><strong>${myRemaining}/${SOLDIERS_PER_SIDE}</strong></div>
+      <div class="stat"><span>Opponent (count only)</span><strong>${theirRemaining}/${SOLDIERS_PER_SIDE}</strong></div>
+      <div class="stat"><span>Dots</span><strong>${blots.length}</strong></div>
+      <div class="stat"><span>Guardrail</span><strong>living positions stay local</strong></div>
     `;
   }
 
@@ -271,7 +519,7 @@ export function createPerangKertas(
   function placeSoldierN(nx: number, ny: number, side: Side): void {
     if (!inOwnFieldN(nx, side)) return;
     if (ny < MARGIN_N || ny > 1 - MARGIN_N) return;
-    const mine = soldiers.filter((s) => s.side === side);
+    const mine = soldiers.filter((s) => s.side === side && !s.foreign);
     if (mine.length >= SOLDIERS_PER_SIDE) return;
     for (const s of mine) {
       const a = px(s.nx, s.ny);
@@ -280,7 +528,14 @@ export function createPerangKertas(
     }
     soldiers.push({ id: nextId++, side, nx, ny, alive: true });
 
-    if (mine.length + 1 >= SOLDIERS_PER_SIDE) {
+    if (mode === "online") {
+      if (deployedMine() >= SOLDIERS_PER_SIDE && !iDeployed) {
+        iDeployed = true;
+        myRemaining = SOLDIERS_PER_SIDE;
+        link?.send({ type: "deploy-done" });
+        maybeStartOnlineInk();
+      }
+    } else if (mine.length + 1 >= SOLDIERS_PER_SIDE) {
       if (side === "left") deploySide = "right";
       else {
         phase = "ink";
@@ -292,9 +547,22 @@ export function createPerangKertas(
     scheduleDraw();
   }
 
+  function maybeStartOnlineInk(): void {
+    if (iDeployed && theyDeployed) {
+      phase = "ink";
+      turn = "left"; // host always starts
+      lastResult = null;
+      updateHud();
+      scheduleDraw();
+    } else {
+      updateHud();
+    }
+  }
+
   function tryPlaceDotN(nx: number, ny: number): void {
     if (!inOwnFieldN(nx, turn)) return;
     if (ny < MARGIN_N || ny > 1 - MARGIN_N) return;
+    if (mode === "online" && turn !== mySide) return;
 
     pendingDot = { nx, ny, side: turn };
     phase = "folding";
@@ -318,6 +586,15 @@ export function createPerangKertas(
 
   function onFoldDone(): void {
     if (!pendingDot) return;
+
+    if (mode === "online") {
+      // Send blot to defender PC — they check hits locally.
+      const shot = pendingDot;
+      link?.send({ type: "dot", nx: shot.nx, ny: shot.ny });
+      // Wait for fold-result; keep folding state until reply
+      return;
+    }
+
     resolveHotseatDot();
   }
 
@@ -331,7 +608,7 @@ export function createPerangKertas(
     let deadPos: { nx: number; ny: number } | null = null;
 
     for (const s of soldiers) {
-      if (!s.alive || s.side !== enemy) continue;
+      if (!s.alive || s.side !== enemy || s.foreign) continue;
       const a = px(s.nx, s.ny);
       const b = px(mx, my);
       if (Math.hypot(a.x - b.x, a.y - b.y) <= HIT_R + BLOT_R * 0.4) {
@@ -371,24 +648,168 @@ export function createPerangKertas(
       revealTimer = null;
       revealSide = null;
 
-      const leftN = countAlive("left");
-      const rightN = countAlive("right");
-      if (leftN === 0 && rightN === 0) {
-        phase = "over";
-        winner = "draw";
-      } else if (rightN === 0) {
-        phase = "over";
-        winner = "left";
-      } else if (leftN === 0) {
-        phase = "over";
-        winner = "right";
+      if (mode === "online") {
+        if (theirRemaining <= 0 && myRemaining <= 0) {
+          phase = "over";
+          winner = "draw";
+        } else if (theirRemaining <= 0) {
+          phase = "over";
+          winner = mySide;
+        } else if (myRemaining <= 0) {
+          phase = "over";
+          winner = mySide === "left" ? "right" : "left";
+        } else {
+          phase = "ink";
+          turn = enemy;
+        }
       } else {
-        phase = "ink";
-        turn = enemy;
+        const leftN = countAlive("left");
+        const rightN = countAlive("right");
+        if (leftN === 0 && rightN === 0) {
+          phase = "over";
+          winner = "draw";
+        } else if (rightN === 0) {
+          phase = "over";
+          winner = "left";
+        } else if (leftN === 0) {
+          phase = "over";
+          winner = "right";
+        } else {
+          phase = "ink";
+          turn = enemy;
+        }
       }
       updateHud();
       scheduleDraw();
     }, 1600);
+  }
+
+  /** Defender PC: check incoming mirrored blot against local army only. */
+  function handleIncomingDot(nx: number, ny: number): void {
+    const mx = 1 - nx;
+    const my = ny;
+    let hit = false;
+    let dead: { nx: number; ny: number } | undefined;
+
+    for (const s of soldiers) {
+      if (!s.alive || s.side !== mySide || s.foreign) continue;
+      const a = px(s.nx, s.ny);
+      const b = px(mx, my);
+      if (Math.hypot(a.x - b.x, a.y - b.y) <= HIT_R + BLOT_R * 0.4) {
+        s.alive = false;
+        hit = true;
+        dead = { nx: s.nx, ny: s.ny };
+        break;
+      }
+    }
+
+    myRemaining = countAlive(mySide);
+    const shooter: Side = mySide === "left" ? "right" : "left";
+
+    // Record blot from shooter's perspective coords
+    blots.push({
+      nx,
+      ny,
+      r: BLOT_R,
+      from: shooter,
+      mx,
+      my,
+      hit,
+    });
+    lastResult = hit ? "kena" : "miss";
+
+    link?.send({
+      type: "fold-result",
+      hit,
+      defenderRemaining: myRemaining,
+      dead,
+    });
+
+    // Reveal on my side (defender sees the blot land)
+    phase = "reveal";
+    revealSide = mySide;
+    updateHud();
+    scheduleDraw();
+
+    if (revealTimer !== null) window.clearTimeout(revealTimer);
+    revealTimer = window.setTimeout(() => {
+      revealTimer = null;
+      revealSide = null;
+      if (myRemaining <= 0) {
+        phase = "over";
+        winner = shooter;
+        link?.send({
+          type: "game-over",
+          winner: shooter === "left" ? "host" : "guest",
+        });
+      } else {
+        phase = "ink";
+        turn = mySide; // defender shoots next
+      }
+      updateHud();
+      scheduleDraw();
+    }, 1600);
+  }
+
+  function onNetMsg(msg: NetMsg): void {
+    switch (msg.type) {
+      case "ready-ping":
+        // Peer announced itself; pairing is handled by the room link.
+        break;
+      case "deploy-done":
+        theyDeployed = true;
+        maybeStartOnlineInk();
+        break;
+      case "dot":
+        // I am defender this turn
+        handleIncomingDot(msg.nx, msg.ny);
+        break;
+      case "fold-result": {
+        // I was shooter — apply result without ever learning living positions
+        if (!pendingDot) break;
+        const { nx, ny, side } = pendingDot;
+        const mx = 1 - nx;
+        const my = ny;
+        theirRemaining = msg.defenderRemaining;
+        if (msg.dead) {
+          soldiers.push({
+            id: nextId++,
+            side: side === "left" ? "right" : "left",
+            nx: msg.dead.nx,
+            ny: msg.dead.ny,
+            alive: false,
+            foreign: true,
+          });
+        }
+        finishDotLocal({
+          nx,
+          ny,
+          side,
+          mx,
+          my,
+          hit: msg.hit,
+          deadPos: msg.dead ?? null,
+        });
+        break;
+      }
+      case "game-over": {
+        phase = "over";
+        winner =
+          msg.winner === "draw"
+            ? "draw"
+            : msg.winner === "host"
+              ? "left"
+              : "right";
+        updateHud();
+        scheduleDraw();
+        break;
+      }
+      case "play-again":
+        beginOnlineDeploy();
+        break;
+      default:
+        break;
+    }
   }
 
   function onPointerDown(e: PointerEvent): void {
@@ -396,9 +817,12 @@ export function createPerangKertas(
       phase === "folding" ||
       phase === "reveal" ||
       phase === "over" ||
-      phase === "menu"
+      phase === "menu" ||
+      phase === "lobby"
     )
       return;
+    if (mode === "online" && phase === "deploy" && iDeployed) return;
+    if (mode === "online" && phase === "ink" && turn !== mySide) return;
 
     const rect = canvas.getBoundingClientRect();
     const x = ((e.clientX - rect.left) / rect.width) * canvas.width;
@@ -406,7 +830,8 @@ export function createPerangKertas(
     const { nx, ny } = toN(x, y);
 
     if (phase === "deploy") {
-      placeSoldierN(nx, ny, deploySide);
+      const side = mode === "online" ? mySide : deploySide;
+      placeSoldierN(nx, ny, side);
       return;
     }
     if (phase === "ink") tryPlaceDotN(nx, ny);
@@ -416,7 +841,7 @@ export function createPerangKertas(
     if (raf) return;
     raf = requestAnimationFrame(() => {
       raf = 0;
-      if (phase === "menu") return;
+      if (phase === "menu" || phase === "lobby") return;
       paint();
     });
   }
@@ -478,6 +903,8 @@ export function createPerangKertas(
     for (const s of soldiers) {
       if (!showAll && s.side !== open) continue;
       if (!showAll && phase === "reveal" && s.alive) continue;
+      // Online: never draw living foreign soldiers (they shouldn't exist anyway)
+      if (s.foreign && s.alive) continue;
       const p = px(s.nx, s.ny);
       drawStickman(ctx, p.x, p.y, s.alive, s.side);
     }
@@ -541,6 +968,7 @@ export function createPerangKertas(
   goMenu();
 
   return () => {
+    destroyLink();
     cancelAnimationFrame(raf);
     cancelAnimationFrame(foldRaf);
     if (revealTimer !== null) window.clearTimeout(revealTimer);

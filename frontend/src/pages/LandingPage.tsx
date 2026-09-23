@@ -38,7 +38,15 @@ export default function LandingPage() {
 
       <div className="relative z-10 max-w-6xl mx-auto px-4 py-10 md:py-16 flex flex-col items-center text-center">
         {/* Hero */}
-        <header className="flex flex-col items-center">
+        <header className="flex flex-col items-center w-full">
+          <nav aria-label="Main navigation" className="w-full flex justify-end mb-2">
+            <Link
+              to="/games"
+              className="btn-push-coral px-5 py-2.5 min-h-[44px] rounded-full bg-coral text-white font-display font-bold flex items-center gap-2 shadow-md"
+            >
+              <span aria-hidden>🎮</span> Games
+            </Link>
+          </nav>
           <div className="flex items-center gap-3 mb-4">
             <div className="w-14 h-14 rounded-2xl bg-white p-2 shadow-md flex items-center justify-center">
               <img alt="LearnLoop logo" className="w-full h-full object-contain" src="/assets/logo.png" />
@@ -84,29 +92,33 @@ export default function LandingPage() {
           </div>
         </header>
 
-        {/* Main Game teaser (above the fold, right after the hero) */}
-        <section aria-label="Play games" className="w-full max-w-2xl mt-10">
+        {/* Main Game teaser (above the fold, first section after the hero) */}
+        <section
+          aria-label="Play games"
+          className="w-full max-w-3xl mt-10 md:mt-12"
+        >
           <Link
             to="/games"
-            className="group block bg-gradient-to-br from-coral via-sunny to-teal rounded-3xl p-6 md:p-8 shadow-lift text-white text-left hover:-translate-y-1 hover:brightness-105 transition"
+            className="group block bg-gradient-to-br from-coral via-sunny to-teal rounded-[2rem] p-8 md:p-12 shadow-lift text-white text-center sm:text-left hover:-translate-y-1.5 hover:brightness-105 transition"
           >
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-              <span className="text-5xl md:text-6xl drop-shadow-md group-hover:scale-110 transition-transform" aria-hidden>
+            <div className="flex flex-col sm:flex-row items-center gap-5 md:gap-7">
+              <span
+                className="text-7xl md:text-8xl drop-shadow-lg group-hover:scale-110 transition-transform"
+                aria-hidden
+              >
                 📄⚔️
               </span>
               <div className="flex-1">
-                <p className="font-display text-xs font-bold tracking-widest uppercase text-white/90">
-                  New Game Zone! 🎉
-                </p>
-                <h2 className="font-display text-2xl md:text-3xl font-bold leading-tight">
-                  Play Games
+                <h2 className="font-display text-3xl md:text-5xl font-bold leading-tight drop-shadow-sm">
+                  New Game Zone! <span aria-hidden>🎉</span>
                 </h2>
-                <p className="font-semibold text-white/95 mt-1 leading-relaxed">
-                  Learn while you play — <strong>Perang Kertas!</strong>
+                <p className="font-semibold text-white/95 mt-2 text-lg md:text-xl leading-relaxed">
+                  Fold it, hide your army, and strike — play{' '}
+                  <strong>Paper War</strong> and more, right in your browser.
                 </p>
               </div>
-              <span className="shrink-0 self-start sm:self-center px-6 py-3 min-h-[44px] rounded-full bg-white text-coral font-display font-bold shadow-md flex items-center gap-2 group-hover:bg-cream transition-colors">
-                Let's play <span aria-hidden>▶</span>
+              <span className="shrink-0 px-8 py-4 min-h-[52px] rounded-full bg-coral text-white font-display text-xl font-bold shadow-lift flex items-center gap-2 ring-4 ring-white/60 group-hover:brightness-110 transition">
+                Play now <span aria-hidden>▶</span>
               </span>
             </div>
           </Link>
