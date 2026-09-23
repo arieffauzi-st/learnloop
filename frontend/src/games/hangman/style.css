@@ -1,0 +1,200 @@
+/* Word Hangman — scoped under .hangman-game (cream/coral/teal palette) */
+
+.hangman-game {
+  --hm-ink: #3a2e39;
+  --hm-cream: #fff9f0;
+  --hm-coral: #ff6b6b;
+  --hm-teal: #4ecdc4;
+  --hm-sunny: #ffd93d;
+  color: var(--hm-ink);
+  font-family: 'Nunito', system-ui, sans-serif;
+  min-height: 100%;
+  padding: 1rem 1.25rem 1.5rem;
+  background: var(--hm-cream);
+}
+
+.hangman-game .topbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.hangman-game h1 {
+  margin: 0.1rem 0 0.25rem;
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+.hangman-game .brand p {
+  margin: 0;
+  opacity: 0.75;
+  font-size: 0.9rem;
+}
+
+.hangman-game .brand-kicker {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--hm-teal);
+}
+
+.hangman-game .hm-btn {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 999px;
+  background: var(--hm-teal);
+  color: #fff;
+  font-weight: 800;
+  font-size: 1rem;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.hangman-game .hm-btn:hover {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+}
+
+.hangman-game .hm-btn.ghost {
+  background: transparent;
+  color: var(--hm-ink);
+  border: 2px solid rgba(58, 46, 57, 0.2);
+}
+
+.hangman-game .hm-btn.big {
+  background: var(--hm-coral);
+  font-size: 1.1rem;
+}
+
+.hangman-game .hm-board {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  background: #fff;
+  border: 1px solid rgba(58, 46, 57, 0.08);
+  border-radius: 20px;
+  padding: 1.25rem;
+  box-shadow: 0 10px 28px rgba(58, 46, 57, 0.08);
+}
+
+.hangman-game .hm-stickman {
+  width: 150px;
+  height: 170px;
+  flex-shrink: 0;
+}
+
+.hangman-game .hm-stickman line,
+.hangman-game .hm-stickman circle {
+  stroke: var(--hm-ink);
+  stroke-width: 4;
+  stroke-linecap: round;
+  fill: none;
+}
+
+.hangman-game .hm-stickman .hm-body {
+  stroke: var(--hm-coral);
+}
+
+.hangman-game .hm-side {
+  flex: 1;
+  min-width: 260px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.hangman-game .hm-wrong {
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.hangman-game .hm-hint {
+  margin: 0;
+  background: rgba(255, 217, 61, 0.25);
+  border-radius: 12px;
+  padding: 0.5rem 0.85rem;
+  font-size: 0.95rem;
+}
+
+.hangman-game .hm-word {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.hangman-game .hm-letter {
+  width: 2.1rem;
+  height: 2.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 800;
+  border-bottom: 4px solid var(--hm-ink);
+  text-transform: uppercase;
+}
+
+.hangman-game .hm-letter.on {
+  color: var(--hm-teal);
+}
+
+.hangman-game .hm-msg {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 800;
+}
+
+.hangman-game .hm-msg.win {
+  color: #1d9a76;
+}
+
+.hangman-game .hm-msg.lose {
+  color: var(--hm-coral);
+}
+
+.hangman-game .hm-keyboard {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.4rem;
+}
+
+.hangman-game .hm-key {
+  min-height: 44px;
+  min-width: 44px;
+  border: 2px solid rgba(58, 46, 57, 0.15);
+  border-radius: 12px;
+  background: #fff;
+  font-weight: 800;
+  font-size: 1.05rem;
+  color: var(--hm-ink);
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.hangman-game .hm-key:hover:not(:disabled) {
+  background: rgba(78, 205, 196, 0.15);
+  border-color: var(--hm-teal);
+}
+
+.hangman-game .hm-key.correct {
+  background: var(--hm-teal);
+  color: #fff;
+  border-color: var(--hm-teal);
+}
+
+.hangman-game .hm-key.wrong-letter {
+  background: rgba(255, 107, 107, 0.15);
+  color: var(--hm-coral);
+  border-color: rgba(255, 107, 107, 0.4);
+}
+
+.hangman-game .hm-key:disabled {
+  cursor: default;
+  opacity: 0.9;
+}

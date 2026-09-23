@@ -62,11 +62,11 @@ export function createPerangKertas(
         <div class="brand">
           <div class="brand-kicker">LearnLoop · Perang Kertas</div>
           <h1>Perang Kertas</h1>
-          <p>Lipat kertas, sembunyikan pasukanmu, dan coba tebak posisi lawan. Satu PC, main bergantian.</p>
+          <p>Lipat kertas, sembunyikan pasukanmu, and try to guess where the opponent hides. One screen, take turns.</p>
         </div>
         ${
           options.embedded
-            ? `<button type="button" class="btn ghost" id="homeBtn">← Menu utama</button>`
+            ? `<button type="button" class="btn ghost" id="homeBtn">← Games hub</button>`
             : ""
         }
       </header>
@@ -91,10 +91,10 @@ export function createPerangKertas(
       <div class="pk-menu">
         <div class="card pk-menu-card">
           <h2>Pilih cara main</h2>
-          <p class="explain">Mode yang tersedia: <strong>Satu PC (bergantian)</strong> — dua pemain berbagi satu layar, sisi lawan selalu tertutup supaya posisinya tetap rahasia.</p>
+          <p class="explain">Available mode: <strong>One PC (take turns)</strong> — two players share one screen; the opponent's side stays hidden so positions remain secret.</p>
           <div class="btn-row" style="margin-top:1rem">
-            <button type="button" class="btn" id="hotseat">Satu PC (bergantian)</button>
-            <button type="button" class="btn warm" id="onlineSoon" disabled title="Segera hadir">Online · 2 PC (segera hadir)</button>
+            <button type="button" class="btn" id="hotseat">One PC (take turns)</button>
+            <button type="button" class="btn warm" id="onlineSoon" disabled title="Coming soon">Online · 2 PCs (coming soon)</button>
           </div>
           <p class="pk-note" id="menuErr"></p>
         </div>
@@ -141,10 +141,10 @@ export function createPerangKertas(
           <div class="card">
             <h2>Cara main</h2>
             <ol class="steps">
-              <li>Pasang <strong>${SOLDIERS_PER_SIDE} stickman</strong> di lapanganmu. Sisi lawan tertutup.</li>
-              <li>Taruh <strong>dot tinta</strong> di kertasmu → dilipat ke lawan.</li>
-              <li>Ulangi sampai <strong>semua</strong> pasukan lawan kena.</li>
-              <li>Mode 1 PC · bergantian, tetap saling tutup sisi.</li>
+              <li>Place <strong>${SOLDIERS_PER_SIDE} stickmen</strong> on your field. The opponent's side stays hidden.</li>
+              <li>Drop an <strong>ink dot</strong> on your paper — it folds over to the opponent.</li>
+              <li>Repeat until <strong>all</strong> of the opponent's soldiers are hit.</li>
+              <li>One PC mode · take turns, sides stay hidden.</li>
             </ol>
             <div class="btn-row">
               <button type="button" class="btn warm" id="reset">Main lagi</button>
@@ -225,40 +225,40 @@ export function createPerangKertas(
       const need = SOLDIERS_PER_SIDE - deployedMine();
       explainEl.textContent =
         deploySide === "left"
-          ? `Pemain KIRI pasang stickman — ${need} lagi. Sisi kanan ditutup.`
-          : `Pemain KANAN pasang stickman — ${need} lagi. Sisi kiri ditutup.`;
-      hintEl.textContent = `Pasang · klik sisi ${deploySide === "left" ? "KIRI" : "KANAN"}`;
+          ? `LEFT player, place ${need} more stickman${need === 1 ? "" : "s"}. Right side is hidden.`
+          : `RIGHT player, place ${need} more stickman${need === 1 ? "" : "s"}. Left side is hidden.`;
+      hintEl.textContent = `Place · click the ${deploySide === "left" ? "LEFT" : "RIGHT"} side`;
     } else if (phase === "ink") {
       const bit =
         lastResult === "kena"
-          ? " Dot tadi KENA! "
+          ? " That dot was a HIT! "
           : lastResult === "miss"
-            ? " Dot tadi meleset. "
+            ? " That dot missed. "
             : " ";
       explainEl.textContent =
         turn === "left"
-          ? `Giliran KIRI taruh tinta.${bit}Lawan tersisa ${rightN}.`
-          : `Giliran KANAN taruh tinta.${bit}Lawan tersisa ${leftN}.`;
-      hintEl.textContent = `Taruh dot · sisi ${turn === "left" ? "KIRI" : "KANAN"}`;
+          ? `It's LEFT's turn to drop ink.${bit}Opponent has ${rightN} left.`
+          : `It's RIGHT's turn to drop ink.${bit}Opponent has ${leftN} left.`;
+      hintEl.textContent = `Drop dot · ${turn === "left" ? "LEFT" : "RIGHT"} side`;
     } else if (phase === "folding") {
-      explainEl.textContent = "Melipat kertas…";
-      hintEl.textContent = "Lipat";
+      explainEl.textContent = "Folding the paper…";
+      hintEl.textContent = "Fold";
     } else if (phase === "reveal") {
       explainEl.textContent =
-        lastResult === "kena" ? "KENA! Stickman gugur." : "Meleset.";
-      hintEl.textContent = "Hasil lipatan";
+        lastResult === "kena" ? "HIT! Stickman down." : "Missed.";
+      hintEl.textContent = "Fold result";
     } else if (winner === "draw") {
-      explainEl.textContent = "Seri.";
-      hintEl.textContent = "Selesai";
+      explainEl.textContent = "It's a draw.";
+      hintEl.textContent = "Game over";
     } else {
       explainEl.textContent =
-        winner === "left" ? "KIRI menang!" : "KANAN menang!";
-      hintEl.textContent = "Selesai";
+        winner === "left" ? "LEFT wins!" : "RIGHT wins!";
+      hintEl.textContent = "Game over";
     }
 
     statsEl.innerHTML = `
-      <div class="stat"><span>Kiri tersisa</span><strong>${leftN}/${SOLDIERS_PER_SIDE}</strong></div>
-      <div class="stat"><span>Kanan tersisa</span><strong>${rightN}/${SOLDIERS_PER_SIDE}</strong></div>
+      <div class="stat"><span>Left remaining</span><strong>${leftN}/${SOLDIERS_PER_SIDE}</strong></div>
+      <div class="stat"><span>Right remaining</span><strong>${rightN}/${SOLDIERS_PER_SIDE}</strong></div>
       <div class="stat"><span>Dot</span><strong>${blots.length}</strong></div>
     `;
   }
@@ -459,8 +459,8 @@ export function createPerangKertas(
 
     ctx.fillStyle = "rgba(47,55,66,0.5)";
     ctx.font = "700 13px Nunito, sans-serif";
-    ctx.fillText("KIRI", 20, 28);
-    ctx.fillText("KANAN", width - 70, 28);
+    ctx.fillText("LEFT", 20, 28);
+    ctx.fillText("RIGHT", width - 70, 28);
 
     for (const b of blots) {
       const ownSide = b.from;
@@ -486,10 +486,10 @@ export function createPerangKertas(
       ctx.fillStyle = "#e7e2d6";
       if (open === "right") {
         ctx.fillRect(0, 0, fx, height);
-        stamp(ctx, fx / 2, height / 2, "Sisi lawan tertutup");
+        stamp(ctx, fx / 2, height / 2, "Opponent side hidden");
       } else {
         ctx.fillRect(fx, 0, width - fx, height);
-        stamp(ctx, fx + (width - fx) / 2, height / 2, "Sisi lawan tertutup");
+        stamp(ctx, fx + (width - fx) / 2, height / 2, "Opponent side hidden");
       }
       ctx.strokeStyle = "rgba(47,55,66,0.35)";
       ctx.setLineDash([6, 5]);
@@ -521,7 +521,7 @@ export function createPerangKertas(
           ? "rgba(63,111,98,0.9)"
           : "rgba(176,137,104,0.9)";
       const cx = open === "left" ? fx / 2 : fx + (width - fx) / 2;
-      ctx.fillText(lastResult === "kena" ? "KENA!" : "meleset", cx, 56);
+      ctx.fillText(lastResult === "kena" ? "HIT!" : "miss", cx, 56);
       ctx.restore();
     }
   }
@@ -561,7 +561,7 @@ function stamp(
   ctx.textAlign = "center";
   ctx.fillText(text, x, y);
   ctx.font = "600 12px IBM Plex Mono, monospace";
-  ctx.fillText("(tidak boleh saling lihat)", x, y + 22);
+  ctx.fillText("(no peeking)", x, y + 22);
   ctx.restore();
 }
 
