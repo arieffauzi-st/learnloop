@@ -7,16 +7,25 @@ import { useGLTF, useAnimations } from '@react-three/drei'
 /** LearnLoop palette (mirrors src/index.css tokens) + meadow greens. */
 const COLORS = {
   cream: '#fff9f0',
+  sand: '#f7e8cf',
+  sandDark: '#eed9b8',
   coral: '#ff6b6b',
   teal: '#4ecdc4',
   sunny: '#ffd93d',
+  lilac: '#c3a6e8',
+  sky: '#eaf6f6',
+  skyTop: '#dff0f5',
   ink: '#3a2e39',
-  grass: '#7ecb6b',
-  grassLight: '#9adb7f',
-  grassDark: '#5cb354',
-  leaf: '#3fa34d',
-  leafDark: '#2e7d3b',
+  grass: '#8fd07f',
+  grassLight: '#a8dd93',
+  grassDark: '#6fbf63',
+  leaf: '#4ecdc4',
+  leafDark: '#3aa89f',
+  leafSunny: '#ffd93d',
+  leafDeep: '#4bb26a',
+  leafCoral: '#ff8f6b',
   trunk: '#8a5a44',
+  trunkTan: '#b08968',
   rock: '#b9c2c4',
 }
 
@@ -33,6 +42,8 @@ const TURN_RATE = 8
 const WORLD_R = 11
 const CHAR_CLAMP_R = 9.6
 const BALL_R = 0.3
+/** Character collision radius vs. solid props. */
+const CHAR_R = 0.35
 /** Camera orbit clamp (radians). */
 const ORBIT_CLAMP = 0.38
 /** Double-click window for run. */
@@ -206,8 +217,15 @@ function useScatter() {
       { x: 4.8, z: -4.8, r: 2.4 },
       { x: 0, z: 0, r: 2.5 },
     ]
+    const TREE_COLORS = [
+      COLORS.leaf,
+      COLORS.leafDark,
+      COLORS.leafSunny,
+      COLORS.leafCoral,
+      COLORS.lilac,
+    ]
     const pick = (n: number, rMin: number, rMax: number) => {
-      const out: { x: number; z: number; r: number; s: number }[] = []
+      const out: { x: number; z: number; r: number; s: number; c: string; t: string }[] = []
       let guard = 0
       while (out.length < n && guard++ < 200) {
         const a = rnd() * Math.PI * 2
@@ -216,33 +234,52 @@ function useScatter() {
         const z = Math.sin(a) * rad
         const r = 0.9
         if (reserved.some((o) => Math.hypot(o.x - x, o.z - z) < o.r + r)) continue
-        out.push({ x, z, r, s: 0.75 + rnd() * 0.6 })
+        out.push({
+          x,
+          z,
+          r,
+          s: 0.75 + rnd() * 0.6,
+          c: TREE_COLORS[Math.floor(rnd() * TREE_COLORS.length)],
+          t: rnd() < 0.5 ? COLORS.trunk : COLORS.trunkTan,
+        })
       }
       return out
+    }
+    const flowers: { x: number; z: number; c: string }[] = []
+    const FLOWER_COLORS = [COLORS.coral, COLORS.sunny, COLORS.lilac, COLORS.teal]
+    for (let i = 0; i < 60; i++) {
+      const a = rnd() * Math.PI * 2
+      const rad = 1.5 + rnd() * 8.5
+      const x = Math.cos(a) * rad
+      const z = Math.sin(a) * rad
+      // Not on the sandy path (runs along z from gate toward signpost).
+      if (Math.abs(x) < 0.9 && z > -4.9) continue
+      flowers.push({ x, z, c: FLOWER_COLORS[Math.floor(rnd() * FLOWER_COLORS.length)] })
     }
     return {
       trees: pick(14, 5.5, 10.2),
       rocks: pick(4, 4.5, 9.5),
       bushes: pick(4, 4.5, 9.5),
+      flowers,
     }
   }, [])
 }
 
 /** Low-poly tree: cylinder trunk + two stacked cone canopies. */
-function Tree({ x, z, s }: { x: number; z: number; s: number }) {
+function Tree({ x, z, s, c, t }: { x: number; z: number; s: number; c: string; t: string }) {
   return (
     <group position={[x, 0, z]} scale={s}>
       <mesh position={[0, 0.55, 0]}>
         <cylinderGeometry args={[0.12, 0.16, 1.1, 6]} />
-        <meshLambertMaterial color={COLORS.trunk} flatShading={true} />
+        <meshLambertMaterial color={t} flatShading={true} />
       </mesh>
       <mesh position={[0, 1.45, 0]}>
         <coneGeometry args={[0.75, 1.2, 7]} />
-        <meshLambertMaterial color={COLORS.leaf} flatShading={true} />
+        <meshLambertMaterial color={c} flatShading={true} />
       </mesh>
       <mesh position={[0, 2.15, 0]}>
         <coneGeometry args={[0.52, 0.95, 7]} />
-        <meshLambertMaterial color={COLORS.leafDark} flatShading={true} />
+        <meshLambertMaterial color={c} flatShading={true} />
       </mesh>
     </group>
   )
@@ -546,8 +583,10 @@ function Meadow({
         // Keyboard: continuous movement, Shift = run.
         const len = Math.hypot(dx, dz)
         speed = k.has('shift') ? speeds.current.run : speeds.current.walk
-        g.position.x += (dx / len) * speed * delta
-        g.position.z += (dz / len) * speed * delta
+        const p = { x: g.position.x + (dx / len) * speed * delta, z: g.position.z + (dz / len) * speed * delta }
+        resolveChar(p)
+        g.position.x = p.x
+        g.position.z = p.z
         clampChar(g)
         target.current = null
         moving.current = k.has('shift') ? 'run' : 'walk'
@@ -557,14 +596,21 @@ function Meadow({
         speed = moving.current === 'run' ? speeds.current.run : speeds.current.walk
         const dist = Math.hypot(t.x - g.position.x, t.z - g.position.z)
         if (dist <= speed * delta + 1e-4) {
-          g.position.set(t.x, 0, t.z)
+          const p = { x: t.x, z: t.z }
+          resolveChar(p)
+          g.position.set(p.x, 0, p.z)
           target.current = null
           moving.current = null
           maybePopStar(g.position)
         } else {
           const step = (speed * delta) / dist
-          g.position.x += (t.x - g.position.x) * step
-          g.position.z += (t.z - g.position.z) * step
+          const p = {
+            x: g.position.x + (t.x - g.position.x) * step,
+            z: g.position.z + (t.z - g.position.z) * step,
+          }
+          resolveChar(p)
+          g.position.x = p.x
+          g.position.z = p.z
           clampChar(g)
         }
       } else {
@@ -674,6 +720,50 @@ function Meadow({
     [scatter],
   )
 
+  /** Solid colliders the CHARACTER cannot pass through (trunks, rocks,
+   *  signpost, gate posts). Bushes stay soft; the ball is handled separately. */
+  const colliders: Obstacle[] = useMemo(() => {
+    const gate = { x: 4.8, z: -4.8, a: Math.PI * 0.75 }
+    const post = (sign: number) => {
+      const lx = 1.05 * sign
+      return {
+        x: gate.x + lx * Math.cos(gate.a),
+        z: gate.z - lx * Math.sin(gate.a),
+        r: 0.32,
+      }
+    }
+    return [
+      ...scatter.trees.map((t) => ({ x: t.x, z: t.z, r: 0.22 * t.s + 0.08 })),
+      ...scatter.rocks.map((t) => ({ x: t.x, z: t.z, r: 0.45 * t.s })),
+      { x: -4.5, z: -4.5, r: 0.3 }, // signpost pole
+      post(-1),
+      post(1),
+    ]
+  }, [scatter])
+
+  /** Push a would-be position out of colliders, sliding along the obstacle
+   *  tangent so movement stays smooth instead of hard-stopping. */
+  const resolveChar = (p: { x: number; z: number }) => {
+    for (const o of colliders) {
+      const ox = p.x - o.x
+      const oz = p.z - o.z
+      const d = Math.hypot(ox, oz)
+      const min = o.r + CHAR_R
+      if (d < min) {
+        if (d < 1e-4) {
+          // Dead center: nudge out along an arbitrary axis.
+          p.x = o.x + min
+          continue
+        }
+        const nx = ox / d
+        const nz = oz / d
+        // Slide: keep the component of motion along the tangent.
+        p.x = o.x + nx * min
+        p.z = o.z + nz * min
+      }
+    }
+  }
+
   return (
     <>
       {/* Meadow + character rotate together for the drag orbit; the camera
@@ -690,21 +780,21 @@ function Meadow({
           }}
         >
           <circleGeometry args={[WORLD_R, 48]} />
-          <meshLambertMaterial color={COLORS.grass} flatShading={true} />
+          <meshLambertMaterial color={COLORS.cream} flatShading={true} />
         </mesh>
 
-        {/* Soft green tone patches */}
+        {/* Soft green + sunny tone patches on the warm sand base */}
         <mesh position={[2.5, 0.01, 2]} rotation={[-Math.PI / 2, 0, 0]}>
           <circleGeometry args={[3.2, 20]} />
           <meshBasicMaterial color={COLORS.grassLight} transparent opacity={0.55} />
         </mesh>
         <mesh position={[-3, 0.01, 1.5]} rotation={[-Math.PI / 2, 0, 0]}>
           <circleGeometry args={[2.6, 20]} />
-          <meshBasicMaterial color={COLORS.grassDark} transparent opacity={0.4} />
+          <meshBasicMaterial color={COLORS.sunny} transparent opacity={0.35} />
         </mesh>
         <mesh position={[0.5, 0.01, -3.5]} rotation={[-Math.PI / 2, 0, 0]}>
           <circleGeometry args={[2.2, 20]} />
-          <meshBasicMaterial color={COLORS.grassLight} transparent opacity={0.45} />
+          <meshBasicMaterial color={COLORS.grass} transparent opacity={0.45} />
         </mesh>
         <mesh position={[5, 0.012, 3.5]} rotation={[-Math.PI / 2, 0, 0]}>
           <circleGeometry args={[1.6, 16]} />
@@ -712,7 +802,17 @@ function Meadow({
         </mesh>
         <mesh position={[-5.5, 0.012, -3]} rotation={[-Math.PI / 2, 0, 0]}>
           <circleGeometry args={[1.4, 16]} />
-          <meshBasicMaterial color={COLORS.grassLight} transparent opacity={0.4} />
+          <meshBasicMaterial color={COLORS.sunny} transparent opacity={0.3} />
+        </mesh>
+
+        {/* Sandy path strip: from the gate toward the signpost */}
+        <mesh position={[0, 0.014, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+          <planeGeometry args={[1.7, 10.4]} />
+          <meshBasicMaterial color={COLORS.sand} transparent opacity={0.9} />
+        </mesh>
+        <mesh position={[0, 0.016, 0]} rotation={[-Math.PI / 2, 0, 0.06]}>
+          <planeGeometry args={[0.5, 10.4]} />
+          <meshBasicMaterial color={COLORS.sandDark} transparent opacity={0.5} />
         </mesh>
 
         {/* Soft circular world border */}
@@ -725,22 +825,26 @@ function Meadow({
           <meshBasicMaterial color={COLORS.teal} transparent opacity={0.5} />
         </mesh>
 
-        {/* Rolling hills silhouettes around the edge */}
+        {/* Rolling hills silhouettes around the edge (muted teal / lilac) */}
         <mesh position={[-8.5, -0.6, -6.5]}>
           <sphereGeometry args={[3.4, 12, 8]} />
-          <meshLambertMaterial color={COLORS.grassDark} flatShading={true} />
+          <meshLambertMaterial color={COLORS.leafDark} flatShading={true} />
         </mesh>
         <mesh position={[9, -1.1, -6]}>
           <sphereGeometry args={[4.2, 12, 8]} />
-          <meshLambertMaterial color={COLORS.leafDark} flatShading={true} />
+          <meshLambertMaterial color={COLORS.lilac} flatShading={true} />
         </mesh>
         <mesh position={[0, -1.3, -10.5]}>
           <sphereGeometry args={[4.6, 12, 8]} />
-          <meshLambertMaterial color={COLORS.grassDark} flatShading={true} />
+          <meshLambertMaterial color={COLORS.teal} flatShading={true} />
         </mesh>
         <mesh position={[9.5, -1.6, 4]}>
           <sphereGeometry args={[3.6, 12, 8]} />
-          <meshLambertMaterial color={COLORS.grassDark} flatShading={true} />
+          <meshLambertMaterial color={COLORS.lilac} flatShading={true} />
+        </mesh>
+        <mesh position={[-9.5, -1.5, 3]}>
+          <sphereGeometry args={[3.2, 12, 8]} />
+          <meshLambertMaterial color={COLORS.teal} flatShading={true} />
         </mesh>
 
         {/* Sun */}
@@ -756,7 +860,7 @@ function Meadow({
 
         {/* Scattered trees / rocks / bushes */}
         {scatter.trees.map((t, i) => (
-          <Tree key={i} x={t.x} z={t.z} s={t.s} />
+          <Tree key={i} x={t.x} z={t.z} s={t.s} c={t.c} t={t.t} />
         ))}
         {scatter.rocks.map((t, i) => (
           <mesh key={i} position={[t.x, 0.28 * t.s, t.z]} scale={t.s}>
@@ -767,8 +871,22 @@ function Meadow({
         {scatter.bushes.map((t, i) => (
           <mesh key={i} position={[t.x, 0.3 * t.s, t.z]} scale={t.s}>
             <icosahedronGeometry args={[0.45, 0]} />
-            <meshLambertMaterial color={COLORS.leaf} flatShading={true} />
+            <meshLambertMaterial color={COLORS.grassDark} flatShading={true} />
           </mesh>
+        ))}
+
+        {/* Tiny flowers: colored head dot on a short stem */}
+        {scatter.flowers.map((f, i) => (
+          <group key={i} position={[f.x, 0, f.z]}>
+            <mesh position={[0, 0.09, 0]}>
+              <cylinderGeometry args={[0.012, 0.012, 0.18, 4]} />
+              <meshLambertMaterial color={COLORS.grassDark} flatShading={true} />
+            </mesh>
+            <mesh position={[0, 0.2, 0]}>
+              <sphereGeometry args={[0.055, 6, 5]} />
+              <meshLambertMaterial color={f.c} flatShading={true} />
+            </mesh>
+          </group>
         ))}
 
         {/* Signpost — navigates to /games */}
@@ -961,6 +1079,8 @@ function SceneContent({
   return (
     <>
       <CanvasTag />
+      <color attach="background" args={[COLORS.sky]} />
+      <fog attach="fog" args={[COLORS.skyTop, 18, 42]} />
       <ambientLight intensity={0.95} />
       <directionalLight position={[6, 9, 5]} intensity={1.05} />
       <Meadow frozen={frozen} onNavigate={onNavigate} keys={keysRef} />
