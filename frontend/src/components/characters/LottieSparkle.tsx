@@ -4,9 +4,27 @@
  *  lottie JSON bundled locally in src/assets/sparkle-lottie.json (no network
  *  fetch, no third-party license concerns — ~2KB star-pulse + bouncing dot,
  *  2s loop @30fps). */
-import { lazy, Suspense, useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useState, type ComponentType } from 'react'
 
-const Lottie = lazy(() => import('lottie-react'))
+// lottie-react's default export breaks under production ESM interop (React #306:
+// 'Element type is invalid... got object'), which unmounts the whole app. Resolve
+// the actual component function defensively — the interop shape differs between
+// dev (named/default) and the minified prod chunk (nested .default.default).
+type LottieComponentType = ComponentType<Record<string, unknown>>
+const Lottie = lazy(async (): Promise<{ default: LottieComponentType }> => {
+  const m: unknown = await import('lottie-react')
+  const mod = m as { default?: unknown; Lottie?: unknown }
+  const candidate =
+    typeof mod.Lottie === 'function'
+      ? mod.Lottie
+      : typeof mod.default === 'function'
+        ? mod.default
+        : (mod.default as { default?: unknown } | undefined)?.default
+  if (typeof candidate !== 'function') {
+    throw new Error('lottie-react: could not resolve component export')
+  }
+  return { default: candidate as LottieComponentType }
+})
 const sparkleDataPromise = import('../../assets/sparkle-lottie.json')
 
 interface LottieSparkleProps {
