@@ -84,6 +84,34 @@ export default function LandingPage() {
           </div>
         </header>
 
+        {/* Main Game teaser (above the fold, right after the hero) */}
+        <section aria-label="Main Game" className="w-full max-w-2xl mt-10">
+          <Link
+            to="/games"
+            className="group block bg-gradient-to-br from-coral via-sunny to-teal rounded-3xl p-6 md:p-8 shadow-lift text-white text-left hover:-translate-y-1 hover:brightness-105 transition"
+          >
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+              <span className="text-5xl md:text-6xl drop-shadow-md group-hover:scale-110 transition-transform" aria-hidden>
+                📄⚔️
+              </span>
+              <div className="flex-1">
+                <p className="font-display text-xs font-bold tracking-widest uppercase text-white/90">
+                  Game Zone Baru! 🎉
+                </p>
+                <h2 className="font-display text-2xl md:text-3xl font-bold leading-tight">
+                  Main Game
+                </h2>
+                <p className="font-semibold text-white/95 mt-1 leading-relaxed">
+                  Main sambil belajar — <strong>Perang Kertas!</strong>
+                </p>
+              </div>
+              <span className="shrink-0 self-start sm:self-center px-6 py-3 min-h-[44px] rounded-full bg-white text-coral font-display font-bold shadow-md flex items-center gap-2 group-hover:bg-cream transition-colors">
+                Main yuk <span aria-hidden>▶</span>
+              </span>
+            </div>
+          </Link>
+        </section>
+
         {/* Hero gamified visual mockup (mock: floating quest card with sticker) */}
         <section aria-label="Product preview" className="relative w-full max-w-md mt-12">
           <div className="absolute -top-4 -right-2 sm:-right-4 px-4 py-1.5 rounded-full bg-sunny text-ink font-display text-xs font-bold shadow-md rotate-6 z-10">

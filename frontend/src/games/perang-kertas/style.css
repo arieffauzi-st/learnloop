@@ -1,0 +1,262 @@
+:root {
+  --bg: #eef1f4;
+  --bg-elevated: #f7f8fa;
+  --panel: #ffffff;
+  --panel-border: rgba(70, 84, 100, 0.12);
+  --ink: #2f3742;
+  --muted: #7a8696;
+  --accent: #6a9a8b;
+  --accent-dim: rgba(106, 154, 139, 0.16);
+  --warm: #b08968;
+  --warm-dim: rgba(176, 137, 104, 0.14);
+  --pen: #2b5f9e;
+  --mono: "IBM Plex Mono", ui-monospace, monospace;
+  --sans: "Nunito", system-ui, sans-serif;
+  --radius: 16px;
+  --shadow: 0 10px 28px rgba(70, 84, 100, 0.08);
+}
+
+.perang-kertas {
+  color: var(--ink);
+  font-family: var(--sans);
+  min-height: 100%;
+}
+
+.perang-kertas .topbar {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 1.35rem 1.5rem 0.85rem;
+}
+
+.perang-kertas .brand-kicker {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--warm);
+}
+
+.perang-kertas h1 {
+  margin: 0;
+  font-size: clamp(1.45rem, 2vw, 1.9rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.perang-kertas .brand p {
+  margin: 0.25rem 0 0;
+  color: var(--muted);
+  max-width: 46rem;
+  line-height: 1.5;
+  font-size: 0.96rem;
+}
+
+.perang-kertas .btn {
+  appearance: none;
+  border: 1px solid var(--panel-border);
+  background: #f4f6f8;
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 0.88rem;
+  font-weight: 650;
+  border-radius: 12px;
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+}
+
+.perang-kertas .btn.ghost {
+  background: transparent;
+}
+
+.perang-kertas .btn.warm {
+  border-color: rgba(176, 137, 104, 0.4);
+  color: var(--warm);
+  background: var(--warm-dim);
+}
+
+.perang-kertas .layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 300px);
+  gap: 1rem;
+  padding: 0.5rem 1.25rem 1.25rem;
+  min-height: calc(100vh - 7rem);
+}
+
+@media (max-width: 960px) {
+  .perang-kertas .layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.perang-kertas .stage {
+  position: relative;
+  min-height: min(72vh, 820px);
+  height: 100%;
+  border-radius: var(--radius);
+  border: 1px solid var(--panel-border);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.perang-kertas canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  cursor: crosshair;
+}
+
+.perang-kertas .stage-hint {
+  position: absolute;
+  left: 1rem;
+  bottom: 1rem;
+  right: 1rem;
+  pointer-events: none;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: rgba(47, 55, 66, 0.7);
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(70, 84, 100, 0.1);
+  border-radius: 12px;
+  padding: 0.55rem 0.75rem;
+}
+
+.perang-kertas .side {
+  display: grid;
+  gap: 0.85rem;
+  align-content: start;
+}
+
+.perang-kertas .card {
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius);
+  padding: 0.95rem 1rem;
+  box-shadow: var(--shadow);
+}
+
+.perang-kertas .card h2 {
+  margin: 0 0 0.75rem;
+  font-size: 0.76rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.perang-kertas .explain {
+  margin: 0;
+  line-height: 1.55;
+  font-size: 0.95rem;
+}
+
+.perang-kertas .stat {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid rgba(70, 84, 100, 0.08);
+  font-size: 0.9rem;
+}
+
+.perang-kertas .stat:last-child {
+  border-bottom: 0;
+}
+
+.perang-kertas .stat span {
+  color: var(--muted);
+}
+
+.perang-kertas .stat strong {
+  font-family: var(--mono);
+  font-weight: 550;
+}
+
+.perang-kertas .btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 0.7rem;
+}
+
+.perang-kertas .steps {
+  margin: 0;
+  padding-left: 1.1rem;
+  color: var(--muted);
+  line-height: 1.55;
+  font-size: 0.92rem;
+}
+
+.pk-menu {
+  padding: 1rem 1.5rem 2rem;
+  display: grid;
+  place-items: start center;
+}
+
+.pk-menu-card {
+  width: min(520px, 100%);
+}
+
+.pk-join {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.85rem;
+}
+
+.pk-join input {
+  flex: 1;
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  padding: 0.55rem 0.75rem;
+  font-family: var(--mono);
+  font-size: 1rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: #f7f8fa;
+  color: var(--ink);
+}
+
+.pk-code {
+  font-family: var(--mono);
+  letter-spacing: 0.14em;
+  font-size: 1.35rem;
+  color: var(--warm);
+}
+
+.pk-note {
+  margin: 0.75rem 0 0;
+  color: var(--warm);
+  font-size: 0.9rem;
+  min-height: 1.2em;
+}
+
+/* --- LearnLoop responsive tweaks (mobile-first, 360px friendly) --- */
+@media (max-width: 960px) {
+  .perang-kertas .topbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.6rem;
+    padding: 1rem 1rem 0.5rem;
+  }
+  .perang-kertas .layout {
+    padding: 0.5rem 0.75rem 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .perang-kertas .topbar .brand p {
+    font-size: 0.88rem;
+  }
+  .perang-kertas .btn {
+    /* touch-friendly hit targets on small phones */
+    min-height: 44px;
+    padding: 0.6rem 1rem;
+    font-size: 0.95rem;
+  }
+  .perang-kertas .stage {
+    min-height: 62vh;
+  }
+}
