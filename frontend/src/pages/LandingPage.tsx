@@ -1,4 +1,18 @@
+import { lazy, Suspense } from 'react'
 import { Link } from 'react-router-dom'
+import { PaperBuddySvg, RocketBuddySvg, StarBuddySvg } from '../components/characters/BuddySvgs'
+
+/** 3D hero scene is lazy: code-split so first paint is never blocked, and the
+ *  static SVG buddy below renders until it (or on WebGL-less devices, forever). */
+const HeroScene = lazy(() => import('../components/three/HeroScene'))
+
+function HeroSceneFallback() {
+  return (
+    <div className="w-full h-full flex items-center justify-center">
+      <PaperBuddySvg className="w-32 h-32 animate-float" />
+    </div>
+  )
+}
 
 const DEMO_ROLES = [
   { role: 'student', emoji: '🎒', label: 'Try as Student', color: 'bg-coral', push: 'btn-push-coral' },
@@ -73,14 +87,20 @@ export default function LandingPage() {
               Create account <span>🌱</span>
             </Link>
           </div>
-          {/* Social proof cluster (mock: overlapping emoji avatars) */}
+          {/* Social proof cluster (mock: overlapping character avatars) */}
           <div className="flex items-center justify-center gap-4 mt-8">
             <div className="flex -space-x-2">
-              <div className="w-9 h-9 rounded-full bg-teal/80 flex items-center justify-center text-sm shadow-md">🎒</div>
-              <div className="w-9 h-9 rounded-full bg-sunny/80 flex items-center justify-center text-sm shadow-md">🌟</div>
-              <div className="w-9 h-9 rounded-full bg-coral/60 flex items-center justify-center text-sm shadow-md">🚀</div>
+              <div className="w-9 h-9 rounded-full bg-teal/20 border-2 border-white shadow-md overflow-hidden flex items-center justify-center">
+                <PaperBuddySvg className="w-8 h-8" />
+              </div>
+              <div className="w-9 h-9 rounded-full bg-sunny/40 border-2 border-white shadow-md overflow-hidden flex items-center justify-center">
+                <StarBuddySvg className="w-8 h-8" />
+              </div>
+              <div className="w-9 h-9 rounded-full bg-coral/20 border-2 border-white shadow-md overflow-hidden flex items-center justify-center">
+                <RocketBuddySvg className="w-8 h-8" />
+              </div>
             </div>
-            <span className="font-display text-2xl font-bold text-coral -rotate-3 inline-block">✨</span>
+            <span className="font-display text-sm font-bold text-teal-dark">Join the loop!</span>
           </div>
         </header>
 
@@ -102,7 +122,7 @@ export default function LandingPage() {
                   Play Games
                 </h2>
                 <p className="font-semibold text-white/95 mt-1 leading-relaxed">
-                  Learn while you play — <strong>Perang Kertas!</strong>
+                  Learn while you play — <strong>Paper War!</strong>
                 </p>
               </div>
               <span className="shrink-0 self-start sm:self-center px-6 py-3 min-h-[44px] rounded-full bg-white text-coral font-display font-bold shadow-md flex items-center gap-2 group-hover:bg-cream transition-colors">
@@ -112,11 +132,13 @@ export default function LandingPage() {
           </Link>
         </section>
 
-        {/* Hero gamified visual mockup (mock: floating quest card with sticker) */}
-        <section aria-label="Product preview" className="relative w-full max-w-md mt-12">
-          <div className="absolute -top-4 -right-2 sm:-right-4 px-4 py-1.5 rounded-full bg-sunny text-ink font-display text-xs font-bold shadow-md rotate-6 z-10">
-            ⭐ Lv 5 Explorer
-          </div>
+        {/* Product preview: quest-card mockup + lazy 3D hero scene, side by
+            side on md+, stacked on mobile (scene capped ~260px tall there). */}
+        <section aria-label="Product preview" className="relative w-full max-w-5xl mt-12 grid md:grid-cols-2 gap-6 md:gap-8 items-center">
+          <div className="relative w-full max-w-md mx-auto">
+            <div className="absolute -top-4 -right-2 sm:-right-4 px-4 py-1.5 rounded-full bg-sunny text-ink font-display text-xs font-bold shadow-md rotate-6 z-10">
+              ⭐ Lv 5 Explorer
+            </div>
           <div className="shadow-float rounded-3xl bg-white p-5 text-left border border-border-soft">
             <div className="flex items-center gap-3 pb-4">
               <div className="w-14 h-14 rounded-2xl bg-warm flex items-center justify-center text-2xl shadow-inner">
@@ -152,10 +174,20 @@ export default function LandingPage() {
               </div>
             </div>
           </div>
+          </div>
+
+          {/* Lazy 3D hero scene (static SVG buddy until WebGL loads / if absent) */}
+          <div className="relative w-full h-[260px] md:h-[400px] rounded-3xl bg-white/70 border border-border-soft shadow-lift overflow-hidden">
+            <Suspense fallback={<HeroSceneFallback />}>
+              <HeroScene />
+            </Suspense>
+          </div>
         </section>
 
         {/* Features strip */}
-        <section aria-label="Features" className="grid md:grid-cols-3 gap-4 w-full mt-12">
+        <section aria-label="Features" className="relative grid md:grid-cols-3 gap-4 w-full mt-12">
+          <StarBuddySvg className="hidden md:block absolute -top-10 right-2 w-16 h-16 rotate-12 animate-float pointer-events-none" />
+          <PaperBuddySvg className="hidden md:block absolute -bottom-8 -left-6 w-14 h-14 -rotate-6 animate-float-slow pointer-events-none" />
           {FEATURES.map((f, i) => (
             <div
               key={f.title}
@@ -175,9 +207,11 @@ export default function LandingPage() {
         </section>
 
         {/* Demo CTAs */}
-        <section aria-label="Try the demo" className="w-full mt-12">
+        <section aria-label="Try the demo" className="relative w-full mt-12">
+          <RocketBuddySvg className="hidden md:block absolute top-0 left-2 w-16 h-16 -rotate-12 animate-float pointer-events-none" />
           <h2 className="font-display text-2xl font-bold">Try the demo 👇</h2>
           <p className="text-muted mt-1">Pick a role and explore LearnLoop in action.</p>
+          <PaperBuddySvg className="md:hidden w-16 h-16 mx-auto mt-4 animate-float" />
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
             {DEMO_ROLES.map((d) => (
               <Link

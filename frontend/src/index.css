@@ -82,3 +82,21 @@ body {
   border-color: var(--color-teal);
   box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.2);
 }
+
+/* Playful float animation for SVG character accents (landing page) */
+@keyframes float-y {
+  0%, 100% { transform: translateY(0) rotate(var(--float-rot, 0deg)); }
+  50% { transform: translateY(-8px) rotate(var(--float-rot, 0deg)); }
+}
+.animate-float {
+  animation: float-y 3.2s ease-in-out infinite;
+}
+.animate-float-slow {
+  animation: float-y 5s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-float,
+  .animate-float-slow {
+    animation: none;
+  }
+}
